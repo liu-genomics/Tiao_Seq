@@ -1,0 +1,33 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# This script will do some bioinformatics preprocessing for Jump-Seq data
+# Example code to run
+# sos run 160408_test.sos -- -j 6
+
+from glob import glob
+from subprocess import check_output
+
+[gunzip]
+## gunzip the raw sequencing files
+rawfiles = sorted(glob('../data/Data/*.gz'))
+input: rawfiles, pattern = '../data/Data/{name}.gz', group_by='single'
+output: pattern = '../data/Data/{_name}'
+run:	concurrent = True
+gunzip -c ${_input} > ${_output}
+
+[preprocessing_1]
+# only partition reads to UMI part and sequence part
+input: pattern = '../data/Data/{name}.fastq'
+output: pattern = '../data/Data/{_name}.adaptor_removed.fastq'
+run:	concurrent = True
+fastx_trimmer -f 9 -i ${_input} -Q 33 -o ../data/Data/${_name}.with_adaptor.fastq
+fastx_trimmer -f 1 -l 8 -i ${_input} -Q 33 -o ../data/Data/${_name}.UMI
+## discard reads without adaptors
+cutdapt --discard-untrimmed -g ^TGACTCG -o ${_output} ../data/Data/${_name}.with_adaptor.fastq
+
+
+
+
+[default]
+sos_run('gunzip+preprocessing')
