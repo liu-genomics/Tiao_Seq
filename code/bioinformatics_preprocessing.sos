@@ -33,7 +33,13 @@ output: pattern = '../data/Data/{_name}.adaptor_removed.sam'
 run:
 bowtie -p 6 -S -m 1 ../other_annotations/bowtie1_indexed_genome/hg19 ${_input} ${_output}
 
-
+[preprocessing_3]
+#transform to bam file and get output statistics
+input: pattern = '../data/Data/{name}.adaptor_removed.sam', group_by='single'
+output: pattern = '../data/Data/{_name}.adaptor_removed.bam.flagstat'
+run: concurrent=True
+samtools view -bS ${_input} -o ../data/Data/${_name}.adaptor_removed.bam
+samtools flagstat ../data/Data/${_name}.adaptor_removed.bam > ${_output}
 
 [default]
 sos_run('gunzip+preprocessing')
