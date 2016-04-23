@@ -18,14 +18,20 @@ gunzip -c ${_input} > ${_output}
 
 [preprocessing_1]
 # only partition reads to UMI part and sequence part
-input: pattern = '../data/Data/{name}.fastq'
+input: pattern = '../data/Data/{name}.fastq', group_by='single'
 output: pattern = '../data/Data/{_name}.adaptor_removed.fastq'
 run:	concurrent = True
 fastx_trimmer -f 9 -i ${_input} -Q 33 -o ../data/Data/${_name}.with_adaptor.fastq
 fastx_trimmer -f 1 -l 8 -i ${_input} -Q 33 -o ../data/Data/${_name}.UMI
 ## discard reads without adaptors
-cutdapt --discard-untrimmed -g ^TGACTCG -o ${_output} ../data/Data/${_name}.with_adaptor.fastq
+cutadapt --discard-untrimmed -g ^TGACTCG -o ${_output} ../data/Data/${_name}.with_adaptor.fastq
 
+[preprocessing_2]
+#map to human genome hg19
+input: pattern = '../data/Data/{name}.adaptor_removed.fastq', group_by='single'
+output: pattern = '../data/Data/{_name}.adaptor_removed.sam'
+run:
+bowtie -p 6 -S -m 1 ../other_annotations/bowtie1_indexed_genome/hg19 ${_input} ${_output}
 
 
 
