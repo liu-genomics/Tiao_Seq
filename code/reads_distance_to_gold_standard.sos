@@ -1,0 +1,87 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# This script will generate files that will be used to calculate the distribution of reads 5' end with gold standard 
+# Example code to run
+
+
+from glob import glob
+from subprocess import check_output
+
+[random_sample_regions: alias = 'random_regions']
+## random sample 10,000 sites for each plus strand minus strand, each bed region will be given a name
+rawfiles = sorted(glob('../data/published_site/*extend.bed'))
+input: rawfiles, pattern = '../data/published_site/{name}.extend.bed', group_by = 'single'
+output: pattern = '../data/published_site/{_name}.extend_sub_10000.bed'
+run:	concurrent = True
+shuf -n 10000 ${_input} | awk {'print $1"\t"$2"\t"$3"\t"NR"\t"$4'} > ${_output}
+
+
+[get_coverage_1: alias = 'prime5_bed']
+# generate bed files with only 5prime ends for both plus reads and minus reads, 
+#the output sequence matters to match plus strand read with minus 
+#strand methylation regions.
+bam_files = '../data/Data/He-lu-6_S6_L006_R1_001.adaptor_removed.bam'
+input: bam_files, pattern = '../data/Data/{name}.bam', group_by	= "single"
+output: pattern = ['../data/Data/{_name}.plus.sorted.5prime.bed','../data/Data/{_name}.minus.sorted.5prime.bed']
+run:	concurrent = True
+samtools view -b -F 20 -o ../data/Data/${_name}.plus.bam ${_input} 
+samtools view -b -f 16 -o ../data/Data/${_name}.minus.bam ${_input} 
+samtools sort ../data/Data/${_name}.plus.bam ../data/Data/${_name}.plus.sorted
+samtools sort ../data/Data/${_name}.minus.bam ../data/Data/${_name}.minus.sorted
+# for plus strand reads, only keep the 5' position
+bedtools bamtobed -i ../data/Data/${_name}.plus.sorted.bam | awk {'print $1"\t"$2"\t"$2+1"\t"$4"\t"$5"\t"$6'} \
+> ../data/Data/${_name}.plus.sorted.5prime.bed
+# for minus strand reads,only keep 5' position
+bedtools bamtobed -i ../data/Data/${_name}.minus.sorted.bam | awk {'print $1"\t"$3-1"\t"$3"\t"$4"\t"$5"\t"$6'} \
+> ../data/Data/${_name}.minus.sorted.5prime.bed
+
+
+[get_coverage_2]
+# calculate coverage
+regions = random_regions.output
+prime5_bed_files = prime5_bed.output
+input: regions, paired_with = ['prime5_bed_files'], group_by = 'single', pattern = '../data/published_site/{name}.extend_sub_10000.bed'
+output: pattern = '../data/published_site/{_name}.sub_10000.extend.genomecov'
+run:	concurrent = True
+bedtools coverage -a ${_prime5_bed_files} -b ${_input} -d > ${_output}
+
+
+
+
+[regions_with_at_least_one_coverage_1: alias = 'one_coverage_regions']
+## use all regions that have at least one read coverage
+rawfiles = sorted(glob('../data/published_site/*extend.bed'))
+reads_bed_files = prime5_bed.output
+input: rawfiles, paired_with = ['reads_bed_files'], group_by = 'single', pattern = '../data/published_site/{name}.extend.bed'
+output: pattern = '../data/published_site/{_name}.with_1_coverage.bed'
+run:	concurrent = True
+awk {'print $1"\t"$2"\t"$3"\t"NR'} ${_input} > ../data/published_site/${_name}_with_index.bed
+bedtools intersect -wa -a ../data/published_site/${_name}_with_index.bed -b ${_reads_bed_files} | sort | uniq > ${_output}
+
+[regions_with_at_least_one_coverage_2]
+prime5_bed_files = prime5_bed.output
+input: paired_with = ['prime5_bed_files'], group_by = 'single', pattern = '../data/published_site/{name}.with_1_coverage.bed'
+output: pattern = '../data/published_site/{_name}.with_1_coverage.bedGraph'
+run:	concurrent = True
+bedtools coverage -a ${_prime5_bed_files} -b ${_input} -d > ${_output}
+
+
+[preprocessing_2]
+#map to human genome hg19
+input: pattern = '../data/Data/{name}.adaptor_removed.fastq', group_by='single'
+output: pattern = '../data/Data/{_name}.adaptor_removed.sam'
+run:
+bowtie -p 6 -S -m 1 ../other_annotations/bowtie1_indexed_genome/mm9 ${_input} ${_output}
+
+[preprocessing_3]
+#transform to bam file and get output statistics
+input: pattern = '../data/Data/{name}.adaptor_removed.sam', group_by='single'
+output: pattern = '../data/Data/{_name}.adaptor_removed.bam.flagstat'
+run: concurrent=True
+samtools view -bS ${_input} -o ../data/Data/${_name}.adaptor_removed.bam
+samtools flagstat ../data/Data/${_name}.adaptor_removed.bam > ${_output}
+
+[default]
+#sos_run('random_sample_regions+get_coverage')
+sos_run('random_sample_regions+get_coverage+regions_with_at_least_one_coverage')
