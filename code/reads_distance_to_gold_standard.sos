@@ -66,21 +66,25 @@ output: pattern = '../data/published_site/{_name}.with_1_coverage.bedGraph'
 run:	concurrent = True
 bedtools coverage -a ${_prime5_bed_files} -b ${_input} -d > ${_output}
 
+[regions_with_at_least_one_coverage_3]
+#write average per-base coverage
+input: pattern = '../data/published_site/{name}.with_1_coverage.bedGraph', group_by = 'single'
+output: pattern = '../data/published_site/{_name}.with_1_coverage.ave.perbase'
+run: 	concurrent = True
+rm -f ../data/published_site/{_name}.with_1_coverage.ave.perbase
+for i in {1..41} /
+do awk -v i="$i" '$5 == i' ${_input} | awk '{print $6}'|paste -s -d+ | bc >> ${_output}
+done
 
-[preprocessing_2]
-#map to human genome hg19
-input: pattern = '../data/Data/{name}.adaptor_removed.fastq', group_by='single'
-output: pattern = '../data/Data/{_name}.adaptor_removed.sam'
-run:
-bowtie -p 6 -S -m 1 ../other_annotations/bowtie1_indexed_genome/mm9 ${_input} ${_output}
+[draw_plot_by_rmarkdown]
+# generate rmarkdown file showing the distribution of the 5'reads across all sites
+```{r}
+# read in one of the output files from the previous step
+data1 = read.delim("../data/published_site/.with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+plot(data1[,1])
+```
 
-[preprocessing_3]
-#transform to bam file and get output statistics
-input: pattern = '../data/Data/{name}.adaptor_removed.sam', group_by='single'
-output: pattern = '../data/Data/{_name}.adaptor_removed.bam.flagstat'
-run: concurrent=True
-samtools view -bS ${_input} -o ../data/Data/${_name}.adaptor_removed.bam
-samtools flagstat ../data/Data/${_name}.adaptor_removed.bam > ${_output}
+
 
 [default]
 #sos_run('random_sample_regions+get_coverage')
