@@ -1,0 +1,59 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# This script will do some bioinformatics preprocessing for Jump-Seq data
+# Example code to run
+# sos run 160408_test.sos -- -j 6
+# the V2 version provides a parameter so that the pipeline only processes files refered by the prameters
+
+from glob import glob
+from subprocess import check_output
+
+[parameters]
+data_folder = '../data/Data/' # where the raw .gz files are in the system
+file_names = str # a list of files that need to be processed
+
+[gunzip]
+## gunzip the raw sequencing files indicated by a parameter showing the 
+raw_files = []
+with open('${file_names}') as f:
+	raw_files = f.read().splitlines()
+raw_files =[data_folder + x for x in raw_files]
+input: raw_files, pattern = '{name}.gz', group_by='single'
+output: pattern = '{_name}'
+run:	concurrent = True
+gunzip -c ${_input} > ${_output}
+
+[trimming]
+# only partition reads to UMI part and sequence part
+input: pattern = '{name}.fastq', group_by='single'
+output: pattern = '{_name}.adaptor_removed.fastq'
+run:	concurrent = True
+fastx_trimmer -f 9 -i ${_input} -Q 33 -o ${_name}.with_adaptor.fastq
+fastx_trimmer -f 1 -l 8 -i ${_input} -Q 33 -o ${_name}.UMI
+## discard reads without adaptors
+cutadapt --discard-untrimmed -g ^TGACTCG -o ${_output} ${_name}.with_adaptor.fastq
+
+[mapping_1]
+#map to human genome hg19
+input: pattern = '{name}.adaptor_removed.fastq', group_by='single'
+output: pattern = '{_name}.adaptor_removed.sam'
+run:
+bowtie -p 6 -S -m 1 ../other_annotations/bowtie1_indexed_genome/mm9 ${_input} ${_output}
+
+[mapping_2]
+#transform to bam file and get output statistics
+input: pattern = '{name}.adaptor_removed.sam', group_by='single'
+output: pattern = '{_name}.adaptor_removed.bam.flagstat'
+run: concurrent=True
+samtools view -bS ${_input} -o ${_name}.adaptor_removed.bam
+samtools flagstat ${_name}.adaptor_removed.bam > ${_output}
+
+
+
+
+
+[default]
+#sos_run('test')
+sos_run('gunzip+trimming+mapping')
+#sos_run('gunzip+preprocessing')

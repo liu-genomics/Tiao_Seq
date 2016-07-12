@@ -1,0 +1,61 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# this script is sued to study the effect of sequence context on jump step
+
+
+from glob import glob
+from subprocess import check_output
+
+[get_fasta_1: alias = 'extend_100bp_separated']
+#first extend to 100bp on each side, then, remove overlapping regions, then get fasta files
+rawfiles = sorted(glob('../data/published_site/*extend.bed'))
+input: rawfiles, pattern = '../data/published_site/{name}.extend.bed', group_by = 'single'
+output: pattern = '../data/published_site/{_name}.extend_100bp_separated.bed'
+run:	concurrent = True
+awk {'print $1"\t"$2-80"\t"$3+80'} ${_input} > ../data/published_site/${_name}.extend_100bp.bed
+bedtools merge -i <(awk {'print $1"\t"$2"\t"$3'} ../data/published_site/${_name}.extend_100bp.bed | sort -k1,1 -k2,2n) \
+| awk {'print $1"\t"$2"\t"$3"\t"$3-$2'} | awk '$4<=201' | awk {'print $1"\t"$2"\t"$3"\t"NR'} > ${_output}
+
+[get_fasta_2: alias='get_fasta']
+#get fasta files
+input: pattern = '../data/published_site/{name}.extend_100bp_separated.bed', group_by = 'single'
+output: pattern = '../data/published_site/{_name}.extend_100bp_separated.fasta'
+run:	concurren = True
+bedtools getfasta -name -fi ../other_annotations/mm9.fasta -bed ${_input} -fo ${_output}
+
+'../data/Data/{_name}.plus.sorted.5prime.bed','../data/Data/{_name}.minus.sorted.5prime.bed'
+
+[regions_with_at_least_one_coverage_1: alias = 'process_plus_meth_sites']
+prime5_minus_bed_files = glob('../data/Data/*.minus.sorted.5prime.bed')
+meth_regions = glob('../data/published_site/*.plus.extend_100bp_separated.bed')
+input: meth_regions, paired_with = ['prime5_minus_bed_files'], group_by = 'single', pattern = '../data/published_site/{name}.bed'
+output: pattern = '../data/published_site/{_name}.with_1_coverage.bedGraph'
+run:	concurrent = True
+bedtools intersect -wa -a ${_input} -b ${_prime5_minus_bed_files} | sort | uniq > ../data/published_site/${_name}.with_1_coverage.bed
+bedtools coverage -a ${_prime5_minus_bed_files} -b ../data/published_site/${_name}.with_1_coverage.bed -d > ${_output}
+
+[regions_with_at_least_one_coverage_2: alias = 'process_minus_meth_sites']
+prime5_plus_bed_files = glob('../data/Data/*.plus.sorted.5prime.bed')
+meth_regions = glob('../data/published_site/*minus.extend_100bp_separated.bed')
+input: meth_regions, paired_with = ['prime5_plus_bed_files'], group_by = 'single', pattern = '../data/published_site/{name}.bed'
+output: pattern = '../data/published_site/{_name}.with_1_coverage.bedGraph'
+run:	concurrent = True
+bedtools intersect -wa -a ${_input} -b ${_prime5_plus_bed_files} | sort | uniq > ../data/published_site/${_name}.with_1_coverage.bed
+bedtools coverage -a ${_prime5_plus_bed_files} -b ../data/published_site/${_name}.with_1_coverage.bed -d > ${_output}
+
+[regions_with_at_least_one_coverage_3]
+#write average per-base coverage
+bedgraph_files = sorted(glob('../data/published_site/*100bp*with_1_coverage.bedGraph'))
+input: bedgraph_files,pattern = '../data/published_site/{name}.with_1_coverage.bedGraph', group_by = 'single'
+output: pattern = '../data/published_site/{_name}.with_1_coverage.ave.perbase'
+run: 	concurrent = True
+rm -f ../data/published_site/{_name}.with_1_coverage.ave.perbase
+for i in {1..201} /
+do awk -v i="$i" '$5 == i' ${_input} | awk '{print $6}'|paste -s -d+ | bc >> ${_output}
+done
+
+
+
+[default]
+sos_run('regions_with_at_least_one_coverage')

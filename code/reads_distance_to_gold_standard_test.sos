@@ -21,7 +21,7 @@ shuf -n 10000 ${_input} | awk {'print $1"\t"$2"\t"$3"\t"NR"\t"$4'} > ${_output}
 # generate bed files with only 5prime ends for both plus reads and minus reads, 
 #the output sequence matters to match plus strand read with minus 
 #strand methylation regions.
-bam_files = '../data/Data/He-lu-6_S6_L006_R1_001.adaptor_removed.bam'
+bam_files = sorted(glob('../data/Data/*.adaptor_removed.bam'))
 input: bam_files, pattern = '../data/Data/{name}.bam', group_by	= "single"
 output: pattern = ['../data/Data/{_name}.plus.sorted.5prime.bed','../data/Data/{_name}.minus.sorted.5prime.bed']
 run:	concurrent = True
@@ -39,6 +39,9 @@ bedtools bamtobed -i ../data/Data/${_name}.minus.sorted.bam | awk {'print $1"\t"
 
 [get_coverage_2]
 # calculate coverage
+#need to consider how to pair the regon files with bam files approriately, now there is only one pair of regions, but multiple pairs of
+#bam files
+
 regions = random_regions.output
 prime5_bed_files = prime5_bed.output
 input: regions, paired_with = ['prime5_bed_files'], group_by = 'single', pattern = '../data/published_site/{name}.extend_sub_10000.bed'
