@@ -1,0 +1,99 @@
+---
+title: "plot Jump-seq reads distribution of spike-in"
+output: html_document
+Author: Yuwen Liu
+---
+
+Reads distribution on spike-in sequences, Deduplicate reads based on UMI info. 
+analyze with 160811 data. 
+compare distribution with default mapping or mapping allowing mismatch on the 1st base of each read
+
+
+```{r,echo=FALSE}
+setwd("/media/yuwen/Elements/Tiao_Seq/analysis")
+source("../lib/draw_reads_distribution.R")
+knitr::opts_chunk$set(fig.width = 10,fig.height = 5)
+options(warn=-1)
+```
+
+\newpage
+
+
+```{r,echo=FALSE,fig.width=5,fig.height=5}
+#plus reads and minus sites
+
+a = read.delim("../data/Data/160811/20160811_5hmC_Jump_Seq_1.2ng.5hmc_spike_in.umi_encoded_adaptor_removed.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+b = read.delim("../data/Data/160811/20160811_5hmC_Jump_Seq_0.6ng.5hmc_spike_in.umi_encoded_adaptor_removed.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+c = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_48ng.5mc_spike_in.umi_encoded_adaptor_removed.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+d = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_24ng.5mc_spike_in.umi_encoded_adaptor_removed.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+e = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_12ng.5mc_spike_in.umi_encoded_adaptor_removed.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+f = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_6ng.5mc_spike_in.umi_encoded_adaptor_removed.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+g = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_2.4ng.5mc_spike_in.umi_encoded_adaptor_removed.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+
+data = cbind(a,b,c,d,e,f,g)
+
+test = orgnize_table(data,7,c("5hmc-1.2ng","5hmc-0.6ng","5mc-48ng","5mc-24ng","5mc-12ng","5mc-6ng","5mc-2.4ng"),seq(-98,101,1),c(1,200))
+
+```
+
+* plus sites and minus reads, raw reads distribution
+
+```{r,echo=FALSE,fig.width=10,fig.height=5}
+draw_plot_together(test,mode = "original",-100, 101)
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=6}
+draw_plot_separate(test,mode = "original",-100, 101)
+```
+
+\newpage
+
+* plus sites and minus reads, normalized reads distribution
+
+```{r,echo=FALSE,fig.width=10,fig.height=5}
+draw_plot_together(test,mode = "normalized",-100, 101)
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=6}
+draw_plot_separate(test,mode = "normalized",-100, 101)
+```
+
+\newpage
+
+```{r,echo=FALSE}
+test = orgnize_table(data,7,c("5hmc-1.2ng","5hmc-0.6ng","5mc-48ng","5mc-24ng","5mc-12ng","5mc-6ng","5mc-2.4ng"),seq(-98,101,1),c(50,150))
+
+```
+
+* plus sites and minus reads, raw reads distribution
+
+```{r,echo=FALSE,fig.width=10,fig.height=5}
+draw_plot_together(test,mode = "original",-50, 50)
+```
+
+
+
+```{r,echo=FALSE,fig.width=10,fig.height=6}
+draw_plot_separate(test,mode = "original",-50, 50)
+```
+
+\newpage
+* plus sites and minus reads, normalized reads distribution, removing reads at two ends before normalization
+
+```{r,echo=FALSE,fig.width=10,fig.height=5}
+draw_plot_together(test,mode = "normalized",-50, 50)
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=6}
+draw_plot_separate(test,mode = "normalized",-50, 50)
+```
