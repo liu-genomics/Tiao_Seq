@@ -1,0 +1,88 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# This script will do some bioinformatics preprocessing for Jump-Seq data
+# Example code to run
+# sos run 160408_test.sos -- -j 6
+# the V2 version provides a parameter so that the pipeline only processes files refered by the prameters
+# this script uses UMI information to collapse PCR duplicates
+# when doing alignment, not allow any mismatch -n 0 -l 35
+# also skip the 1st base, to allow muation on the 1st base caused by the experiment. -5 1
+
+
+from glob import glob
+from subprocess import check_output
+
+[parameters]
+data_folder = '../data/Data/' # where the raw .gz files are in the system
+file_names = str # a list of files that need to be processed
+
+[gunzip]
+## gunzip the raw sequencing files indicated by a parameter showing the 
+raw_files = []
+with open('${file_names}') as f:
+	raw_files = f.read().splitlines()
+raw_files =[data_folder + x for x in raw_files]
+input: raw_files, pattern = '{name}.gz', group_by='single'
+output: pattern = '{_name}'
+run:	concurrent = True
+gunzip -c ${_input} > ${_output}
+
+[trimming]
+# only partition reads to UMI part and sequence part
+input: pattern = '{name}.fastq', group_by='single'
+output: pattern = '{_name}.adaptor_removed.fastq'
+run:	concurrent = True
+fastx_trimmer -f 9 -i ${_input} -Q 33 -o ${_name}.with_adaptor.fastq
+fastx_trimmer -f 1 -l 8 -i ${_input} -Q 33 -o ${_name}.UMI
+## discard reads without adaptors
+cutadapt --discard-untrimmed -g ^TGACTCG -o ${_output} ${_name}.with_adaptor.fastq
+
+[mapping_1]
+#map to human genome hg19
+input: pattern = '{name}.adaptor_removed.fastq', group_by='single'
+output: pattern = '{_name}.adaptor_removed.sam'
+run:
+bowtie -p 6 -S -m 1 ../other_annotations/bowtie1_indexed_genome/mm9 ${_input} ${_output}
+
+[mapping_2]
+#transform to bam file and get output statistics
+input: pattern = '{name}.adaptor_removed.sam', group_by='single'
+output: pattern = '{_name}.adaptor_removed.bam.flagstat'
+run: concurrent=True
+samtools view -bS ${_input} -o ${_name}.adaptor_removed.bam
+samtools flagstat ${_name}.adaptor_removed.bam > ${_output}
+
+[UMI_encoding]
+# encode UMI information to the name of each read by umi_tools
+input: pattern = '{name}.fastq', group_by='single'
+output: pattern = '{_name}.umi_encoded_adaptor_removed.fastq'
+run:	concurrent = True
+/media/yuwen/F/tools/miniconda3/bin/umi_tools extract -p NNNNNNNN --quality-filter-threshold 20 --quality-encoding phred33 -I ${_input} -L ${_name}.UMI_extract.log -S ${_name}.umi_encoded.fastq
+## discard reads without adaptors
+cutadapt --discard-untrimmed -g ^TGACTCG -o ${_output} ${_name}.umi_encoded.fastq
+
+[UMI_mapping_1]
+#map to human genome hg19
+input: pattern = '{name}.umi_encoded_adaptor_removed.fastq', group_by='single'
+output: pattern = '{_name}.umi_encoded_adaptor_removed_no_mismatch.sam'
+run:
+bowtie -p 6 -S -m 1 -n 0 -l 35 -5 1 ../other_annotations/bowtie1_indexed_genome/mm9 ${_input} ${_output}
+
+[UMI_mapping_2]
+#transform to bam file and get output statistics
+input: pattern = '{name}.umi_encoded_adaptor_removed_no_mismatch.sam', group_by='single'
+output: pattern = '{_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.flagstat'
+run: concurrent=True
+samtools view -bS ${_input} -o ${_name}.umi_encoded_adaptor_removed_no_mismatch.bam
+samtools sort ${_name}.umi_encoded_adaptor_removed_no_mismatch.bam ${_name}.umi_encoded_adaptor_removed_no_mismatch.sorted
+samtools index ${_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.bam
+/media/yuwen/F/tools/miniconda3/bin/umi_tools dedup -I ${_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.bam -S ${_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam -L ${_name}.UMI_dedup_no_mismatch.log
+samtools flagstat ${_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam > ${_output}
+
+[default]
+#sos_run('test')
+#sos_run('gunzip+trimming+mapping')
+sos_run('gunzip+UMI_encoding+UMI_mapping')
+#sos_run('gunzip+umi')
+#sos_run('gunzip+preprocessing')
