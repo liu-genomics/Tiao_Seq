@@ -123,7 +123,7 @@ $(document).ready(function () {
 3. Trim reads that have adaptor sequences at the 3'ends, for both reads of each pair.
 4. Remove a pair of reads if any one of them is empty.
 5. Demultiplexing using cell-specific indexes.
-6. Paired end mapping without mismatch (no mismatch in the first 35 base).
+6. Paired end mapping without mismatch (no mismatch in the first 35 base, maximal insert size is 250, not allow multiple alignment).
 7. collapsing PCR duplicates using UMI information (if not mappable in Step 6, reads won't be kept after Step 7). </code></pre>
 <ul>
 <li>Needs to be updated in the pipeline</li>
