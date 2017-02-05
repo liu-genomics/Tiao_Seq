@@ -1,0 +1,108 @@
+#!/usr/bin/env sos-runner
+#fileformat=sos 0.8.4.1
+
+# this script generates coverage for a bam file around a positive control dataset, methylation region (+-100bp) defined from one TAB-Seq
+
+
+from glob import glob
+from subprocess import check_output
+
+
+parameter: data_folder = '../data/Data/' # where bam file is
+parameter: file_name = str # bam file name
+parameter: output_folder = '../processed_files'
+parameter: tab_seq_ref_plus = str # the tab-seq sites on the plus strand
+parameter: tab_ref_seq_minus = str # the tab-seq sites on the minus strand
+
+
+[get_coverage_1]
+# generate bed files with only 5prime ends for both plus reads and minus reads, 
+#the output sequence matters to match plus strand read with minus 
+#strand methylation regions.
+bam_file = data_folder + file_name
+
+input: bam_file, pattern = "{name}.bam"
+output: ["${_name}.bam.plus.sorted.5prime.bed","${_name}.bam.minus.sorted.5prime.bed"]
+run:
+samtools view -b -F 20 -o ${_name}.bam.plus ${_input} 
+samtools view -b -f 16 -o ${_name}.bam.minus ${_input} 
+samtools sort ${_name}.bam.plus ${_name}.plus.sorted
+samtools sort ${_name}.bam.minus ${_name}.minus.sorted
+# for plus strand reads, only keep the 5' position
+bedtools bamtobed -i ${_name}.plus.sorted.bam | awk {'print $1"\t"$2"\t"$2+1"\t"$4"\t"$5"\t"$6'} \
+> ${output[0]}
+# for minus strand reads,only keep 5' position
+bedtools bamtobed -i ${_name}.minus.sorted.bam | awk {'print $1"\t"$3-1"\t"$3"\t"$4"\t"$5"\t"$6'} \
+> ${output[1]}
+
+
+[regions_with_at_least_one_coverage_1]
+
+bam_file = data_folder + file_name
+
+postfix = '.minus.sorted.5prime.bed'
+prime5_minus_bed_files = bam_file + postfix
+
+input: prime5_minus_bed_files, pattern = "{name}.minus.sorted.5prime.bed"
+output: ["${_name}.plus_sites_with_1_coverage.bedGraph"]
+run:
+bedtools intersect -wa -a ${tab_seq_ref_plus} -b ${_input} | sort | uniq > ${_name}.plus_sites_with_1_coverage.bed
+bedtools coverage -a ${_input} -b ${_name}.plus_sites_with_1_coverage.bed -d > ${_output}
+
+[regions_with_at_least_one_coverage_2]
+
+bam_file = data_folder + file_name
+
+postfix = '.plus.sorted.5prime.bed'
+prime5_plus_bed_files = bam_file + postfix
+
+input: prime5_plus_bed_files, pattern = "{name}.plus.sorted.5prime.bed"
+output: ["${_name}.minus_sites_with_1_coverage.bedGraph"]
+run:
+bedtools intersect -wa -a ${tab_ref_seq_minus} -b ${_input}  | sort | uniq > ${_name}.minus_sites_with_1_coverage.bed
+bedtools coverage -a ${_input} -b ${_name}.minus_sites_with_1_coverage.bed -d > ${_output}
+
+[regions_with_at_least_one_coverage_3]
+
+bam_file = data_folder + file_name
+
+#write average per-base coverage
+postfix_plus = '.plus_sites_with_1_coverage.bedGraph'
+postfix_minus = '.minus_sites_with_1_coverage.bedGraph'
+
+bedgraph_files_1 = bam_file + postfix_plus
+bedgraph_files_2 = bam_file + postfix_minus
+bedgraph_files = [bedgraph_files_1, bedgraph_files_2]
+
+input: bedgraph_files,pattern = "{name}_with_1_coverage.bedGraph", group_by = 'single'
+output: ["${_name}_with_1_coverage.ave.perbase"]
+task: concurrent = True
+run: 	
+rm -f ../data/Data/${_name}_with_1_coverage.ave.perbase
+for i in {1..201} 
+
+do awk -v i="$i" '$5 == i' ${_input} | awk '{print $6}'|paste -s -d+ | bc >> ${_output}
+done
+
+[draw_read_distribution_plot_1]
+# draw read 5' distribution around hydroxy-methylated sites
+input: pattern = '../data/Data/{name}_with_1_coverage.ave.perbase', group_by = 'single'
+output: pattern = '../data/Data/{_name}_with_1_coverage.ave.perbase.eps'
+R:
+library(ggplot2)
+all_files = list.files("../data/Data/","*_with_1_coverage.ave.perbase$", full.names = TRUE)
+for(i in 1:length(all_files)){
+	prefix = strsplit(all_files[i], split = "_with_1_coverage.ave.perbase")[[1]]
+	output = paste(prefix, "_with_1_coverage.ave.perbase.eps",sep="")
+	temp = read.delim(all_files[i], header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+	temp = data.frame(Count = temp[,1],position = seq(-100,100,1))
+	ggplot(temp)+geom_line(aes(y =Count, x = position))+theme_classic()+
+  theme(text = element_text(size = 14),axis.text.x = element_text(size =14, colour = "black"), 
+        axis.text.y = element_text(size =14, colour = "black"))+ggtitle(prefix)
+  	ggsave(output)
+}
+
+
+
+[default]
+sos_run('get_coverage+regions_with_at_least_one_coverage')

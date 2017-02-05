@@ -1,0 +1,67 @@
+---
+title: "plot Jump-seq reads distribution"
+output: html_document
+---
+
+Alignment paramters:
+Skip the 1st base
+Doesn't allow any mismatch
+collapse PCR duplicates.
+
+
+### plus reads and minus sites
+```{r,echo=FALSE}
+library(ggplot2)
+library(Rmisc)
+#function to return a data.frame that could be used to draw plots
+draw_plot_from_ave_perbase <- function(data, x_start = -100, x_end = 100){
+  data <- data.frame(coverage = data[,1], position = seq(x_start, x_end))
+  ggplot(aes(x = position, y = coverage), data = data) + geom_line()+ggtitle("reads_distribution")+xlim(x_start,x_end)+theme_classic()+theme(axis.text.x = element_text(size =10, color = "black", hjust = 1, vjust = 1), axis.text.y = element_text(size =10, color = "black"))
+}
+### a vector containing different conditions
+conditions = c("48ng","24ng","12ng","6ng","2.4ng")
+```
+
+
+
+```{r, fig.width= 10}
+
+#### NC1 whole genome plus sites and minus sites
+data <- read.delim("../data/Data/20170120_first/Jump-NC-1.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data)
+
+data <- read.delim("../data/Data/20170120_first/Jump-NC-1.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data)
+
+
+#### NC2 whole genome plus sites and minus sites
+data <- read.delim("../data/Data/20170120_first/Jump-NC-2.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data)
+
+data = read.delim("../data/Data/20170120_first/Jump-NC-2.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data)
+
+#### Jump positive 1 site whole genome plus sites and minus sites
+data <- read.delim("../data/Data/20170120_first/Jump-positive.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data)
+
+data <- read.delim("../data/Data/20170120_first/Jump-positive.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data)
+
+#### Jump 2hmc sites whole genome plus sites and minus sites
+data <- read.delim("../data/Data/20170120_first/Jump-2hmC-sites.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data)
+
+data<- read.delim("../data/Data/20170120_first/Jump-2hmC-sites.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data)
+
+```
+

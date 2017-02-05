@@ -19,26 +19,36 @@ with open("${file_names}") as f:
 	raw_files = f.read().splitlines()
 
 input: raw_files, pattern = '{name}.bam', group_by='single'
-output: "${_name}_subsample_*.bam"
+output: ["${_name}_subsample_0.1.bam",
+"${_name}_subsample_0.2.bam",
+"${_name}_subsample_0.3.bam",
+"${_name}_subsample_0.4.bam",
+"${_name}_subsample_0.5.bam",
+"${_name}_subsample_0.6.bam",
+"${_name}_subsample_0.7.bam",
+"${_name}_subsample_0.8.bam",
+"${_name}_subsample_0.9.bam",
+"${_name}_subsample_0.99.bam"]
 task: concurrent = True
 run:	
-samtools view -F 0.1 -b ${_input} -o ${_name}_subsample_0.1.bam
-samtools view -F 0.2 -b ${_input} -o ${_name}_subsample_0.2.bam
-samtools view -F 0.3 -b ${_input} -o ${_name}_subsample_0.3.bam
-samtools view -F 0.4 -b ${_input} -o ${_name}_subsample_0.4.bam
-samtools view -F 0.5 -b ${_input} -o ${_name}_subsample_0.5.bam
-samtools view -F 0.6 -b ${_input} -o ${_name}_subsample_0.6.bam
-samtools view -F 0.7 -b ${_input} -o ${_name}_subsample_0.7.bam
-samtools view -F 0.8 -b ${_input} -o ${_name}_subsample_0.8.bam
-samtools view -F 0.9 -b ${_input} -o ${_name}_subsample_0.9.bam
-samtools view -F 0.99 -b ${_input} -o ${_name}_subsample_0.99.bam
+samtools view -s 0.1 -b ${_input} -o ${_name}_subsample_0.1.bam
+samtools view -s 0.2 -b ${_input} -o ${_name}_subsample_0.2.bam
+samtools view -s 0.3 -b ${_input} -o ${_name}_subsample_0.3.bam
+samtools view -s 0.4 -b ${_input} -o ${_name}_subsample_0.4.bam
+samtools view -s 0.5 -b ${_input} -o ${_name}_subsample_0.5.bam
+samtools view -s 0.6 -b ${_input} -o ${_name}_subsample_0.6.bam
+samtools view -s 0.7 -b ${_input} -o ${_name}_subsample_0.7.bam
+samtools view -s 0.8 -b ${_input} -o ${_name}_subsample_0.8.bam
+samtools view -s 0.9 -b ${_input} -o ${_name}_subsample_0.9.bam
+samtools view -s 0.99 -b ${_input} -o ${_name}_subsample_0.99.bam
 
 
 [demultiplexing]
 ## demultiplexing for each sub-sampling of reads
 input: pattern = '{name}_subsample_{proportion}.bam', group_by = 'single'
-output: "{_name}_subsample_{_proportion}.sorted.dedup.bam"
+output: "${_name}_subsample_${_proportion}.sorted.dedup.bam.flagstat"
 task: concurrent = True
+run:
 samtools sort ${_input} ${_name}_subsample_${_proportion}.sorted
 samtools index ${_name}_subsample_${_proportion}.sorted.bam
 /media/yuwen/F/tools/miniconda3/bin/umi_tools dedup -I ${_name}_subsample_${_proportion}.sorted.bam -S ${_name}_subsample_${_proportion}.sorted.dedup.bam -L ${_name}_subsample_${_proportion}_UMI_dedup.log
@@ -48,7 +58,7 @@ rm ${_name}_subsample_${_proportion}.sorted.bam
 [default]
 #sos_run('test')
 #sos_run('gunzip+trimming+mapping')
-sos_run('subsample')
-#sos_run('subsample+demultiplexing')
+#sos_run('subsample')
+sos_run('subsample+demultiplexing')
 #sos_run('gunzip+umi')
 #sos_run('gunzip+preprocessing')

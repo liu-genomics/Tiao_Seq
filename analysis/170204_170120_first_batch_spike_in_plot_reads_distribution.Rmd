@@ -1,0 +1,43 @@
+---
+title: "plot Jump-seq reads distribution"
+output: html_document
+---
+
+Alignment paramters:
+Skip the 1st base
+Doesn't allow any mismatch
+collapse PCR duplicates.
+
+
+### plus reads and minus sites
+```{r,echo=FALSE}
+library(ggplot2)
+library(Rmisc)
+
+draw_plot_from_ave_perbase <- function(data, x_start = -100, x_end = 100){
+  data <- data.frame(coverage = data[,1], position = seq(x_start, x_end))
+  ggplot(aes(x = position, y = coverage), data = data) + geom_line()+ggtitle("reads_distribution")+xlim(x_start,x_end)+theme_classic()+theme(axis.text.x = element_text(size =10, color = "black", hjust = 1, vjust = 1), axis.text.y = element_text(size =10, color = "black"))
+}
+
+```
+
+
+
+#### **Reads distribution on spike in**
+
+#### NC1 
+```{r, fig.width=8}
+#### NC1 on spike in 
+data <- read.delim("../data/Data/20170120_first/Jump-NC-1.160811_5hmc_spikein.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data, -99, 100 )
+#### NC2 on spike in
+```
+
+#### NC2
+```{r, fig.width=8}
+data <- read.delim("../data/Data/20170120_first/Jump-NC-2.160811_5hmc_spikein.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data, -99, 100)
+
+```
