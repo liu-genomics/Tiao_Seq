@@ -41,3 +41,25 @@ data <- read.delim("../data/Data/20170120_first/Jump-NC-2.160811_5hmc_spikein.um
 draw_plot_from_ave_perbase(data, -99, 100)
 
 ```
+
+
+#### Jump-positive, only randomly choose 5% of the total reads from the library, as collapsing PCR for all reads on spike-in takes too much time
+
+
+```{r, fig.width=8}
+data <- read.delim("../data/Data/20170120_first/Jump-positive_5pct.160811_5hmc_spikein.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data, -99, 100)
+
+```
+
+
+
+#### Jump-2hmc, only randomly choose 5% of the total reads from the library, as collapsing PCR for all reads on spike-in takes too much time
+
+```{r, fig.width=8}
+data <- read.delim("../data/Data/20170120_first/Jump-2hmC-sites_5pct.161116_5hmc_2sites_spikein.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+draw_plot_from_ave_perbase(data, -99, 100)
+
+```
