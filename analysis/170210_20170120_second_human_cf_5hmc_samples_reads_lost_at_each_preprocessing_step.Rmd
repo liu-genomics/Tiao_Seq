@@ -1,0 +1,18 @@
+---
+title: "The number of reads lost at each step for previous 5hmc samples"
+output: html_document
+---
+
+
+**20170120_second**
+
+
+
+323T_hmC_jump_cfDNA
+
+```
+no mismatch, mapped distinct reads : 0.29 million
+no mismatch, mapped total reads: 14.6 million
+no mismatch, with Jump barcode, before mapping: 33.8 million
+total reads from raw data: 42.3 million
+```
