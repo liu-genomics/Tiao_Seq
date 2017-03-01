@@ -11,7 +11,7 @@
 
 
 
-<title>The number of reads lost at each step for previous 5hmc samples</title>
+<title></title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -198,46 +198,67 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">The number of reads lost at each step for previous 5hmc samples</h1>
 
 </div>
 
 
-<p><strong>20170120_second</strong></p>
-<div id="t_hmc_jump_cfdna" class="section level3">
-<h3>323T_hmC_jump_cfDNA</h3>
-<pre><code>no mismatch, mapped distinct reads : 0.29 million
-no mismatch, mapped total reads: 14.6 million
-no mismatch, with Jump barcode, before mapping: 33.8 million
-total reads from raw data: 42.3 million</code></pre>
+<h1 style="color:grey;font-family:arial; position:relative; top:15px;text-align:center;">
+Collaboration J project<img src="website_materials/research_website_logo.png"  style="float:right;width:200px;height:150px;">
+</h1>
+<p><br></p>
+<hr />
+<div id="available-data-set" class="section level3">
+<h3>0. Available data set</h3>
+<ul>
+<li><a href="https://drive.google.com/open?id=1WesFCQTrFplnXRKCHmhqtm1529DHc5Sc2tX7GkRa_-U">jump-seq</a></li>
+</ul>
 </div>
-<div id="a_gdna_input" class="section level3">
-<h3>323A_gDNA_input</h3>
-<pre><code>default mismatch allowed, uniquely mappable reads: 27.2 million
-total reads from raw data: 41.1 million</code></pre>
+<div id="spike-in-distribution" class="section level3">
+<h3>1. spike-in distribution</h3>
+<ul>
+<li><p><a href="./161120_161116_spike_in_data_plot_reads_distribution.html">161116 1-site,2-site,and negative control, stringent mapping, PCR duplicates removed</a></p></li>
+<li><p><a href="./160912_plot_reads_distribution_UMI_dedupped.html">160917_160811 1-site spike-in, mapping allowing for mismatches, PCR duplicates removed</a></p></li>
+<li><p><a href="./170204_170120_first_batch_spike_in_plot_reads_distribution.html">170120_first, mapping not allowing for mismatches, PCR duplicates removed</a></p></li>
+</ul>
 </div>
-<div id="a_gdna_seal" class="section level3">
-<h3>323A_gDNA_seal</h3>
-<pre><code>default mismatch allowed, uniquely mappable reads: 37.2 million
-total reads from raw data: 50.3 million</code></pre>
+<div id="real-data-distribution" class="section level3">
+<h3>2. Real data distribution</h3>
+<ul>
+<li><p><a href="./160912_plot_reads_distribution_UMI_dedupped.html">160912_160620, compared to Tab-Seq all peaks, mapping allowing mismatches, PCR duplicates removed</a></p></li>
+<li><p><a href="./161120_160620_data_plot_reads_distribution.html">161120_160620, compared to Tab-Seq FDR 0.484 peaks, mapping allowing mismatches, PCR duplicates removed</a></p></li>
+<li><p><a href="./170204_170120_first_batch_data_plot_reads_distribution.html">170120_first data, compared to Tab-Seq FDR 0.484 peaks, mapping not allowing mismatches, PCR duplicates removed</a></p></li>
+</ul>
 </div>
-<div id="t_gdna_input" class="section level3">
-<h3>323T_gDNA_input</h3>
-<pre><code>default mismatch allowed, uniquely mappable reads: 29.2 million
-total reads from raw data: 45.0 million</code></pre>
+<div id="shengtong-peak-overlap-analysis" class="section level3">
+<h3>3. Shengtong peak overlap analysis</h3>
+<ul>
+<li><a href="./JumpSeq_dropbox_shengtong.pdf">drop_box_share</a></li>
+</ul>
 </div>
-<div id="t_gdna_seal" class="section level3">
-<h3>323T_gDNA_seal</h3>
-<pre><code>default mismatch allowed, uniquely mappable reads: 35.3 million
-total reads from raw data: 47.2 million</code></pre>
+<div id="paired-end-sequencing-analysis" class="section level3">
+<h3>4. Paired end sequencing analysis</h3>
+<ul>
+<li><p><a href="./161218_paired_end_reads_mapping_pipeline.html">161218 analysis pipeline</a></p></li>
+<li><p><a href="./161218_161130_paired_end_reads_statistics.html">161218 pipeline, 20161130 5hmc data, processed reads number and mappable reads number</a></p></li>
+<li><p><a href="./161222_161130_5mc_paired_end_reads_statistics.html">161218 pipeilne, 20161130 5mc data, processed reads number and mapped reads number</a></p></li>
+<li><p><a href="./170115_170110_paired_end_reads_statistics.html">161218 pipeline, 20170110 5mc data, processed reads number and mapped reads number</a></p></li>
+</ul>
 </div>
-<div id="t_hmc_seal_cfdna" class="section level3">
-<h3>323T_hmC_seal_cfDNA</h3>
-<pre><code>default mismatch allowed, uniquely mappable reads: 39.6 million
-total reads from raw data: 48.2 million</code></pre>
+<div id="distinct-reads-saturation-analysis" class="section level3">
+<h3>5. distinct reads Saturation analysis</h3>
+<ul>
+<li><a href="./161226_previous_5hmc_distinct_reads_saturation_analysis.html">161226 analysis for all previous 5hmc 48 ng data and one 2.4 ng data</a></li>
+</ul>
 </div>
-<div id="section" class="section level3">
-<h3></h3>
+<div id="investigation-on-reads-lost-at-each-preprocessing-step." class="section level3">
+<h3>6. Investigation on reads lost at each preprocessing step.</h3>
+<ul>
+<li><p><a href="./170207_previous_5hmc_samples_reads_lost_at_each_preprocessing_step.html">Investiage reads lost at each step for all previous up to 160811 48ng 5hmc data</a></p></li>
+<li><p><a href="./170210_investigate_low_mappability_issue.html">Explore why there is a low mappability rate for reads with a Jump-Seq barcode. Use 160402 5hmc data (He-lu-6_S6_L006_R1_001). Randomly picked 10 reads, 6 reads have multiple alignments, 6 reads would have been mapped if allowing for 2 or 3 mismatches, 3 reads are not mapped even if allowing for 3 mismatches</a></p></li>
+<li><p><a href="./170210_20170120_second_human_cf_5hmc_samples_reads_lost_at_each_preprocessing_step.html">170120_second, cell free DNA Jump-Seq (323T_hmC_jump_cfDNA) reads statistics at each step</a></p></li>
+</ul>
+<hr />
+<p><strong>Last updated:</strong> 2017-03-01 14:28:25</p>
 </div>
 
 
