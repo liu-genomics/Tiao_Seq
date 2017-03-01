@@ -1,0 +1,43 @@
+#!/usr/bin/env sos-runner
+#fileformat=sos 0.8.4.1
+
+# this script is used to process the NGS data from regular NGS libraries that need to be mapped to DNA reference
+
+
+from glob import glob
+from subprocess import check_output
+
+parameter: data_folder = '../data/' # where the raw .gz files are in the system
+parameter: file_name = str # The name of a file that will be processed
+parameter: bowtie_index = '../other_annotations/bowtie2_indexed_genome/mm9' # a string that will append to the output files to indicate what genomic references are used.
+parameter: reference_name = str # a character string representing the genome reference that the library is mapped to. Need to be consistent with [bowtie_index]
+parameter: cpu_number = 4 # a number indicates how many cpus will be used for tophat mapping.
+
+
+
+[gunzip: shared = {"gunzip_output": "output"}]
+## gunzip the raw sequencing file with a filename file_name
+
+raw_file = data_folder + file_name
+
+input: raw_file, pattern = "{name}.fastq.gz"
+output: ["${_name}.fastq"]
+run: 
+gunzip -c ${_input} > ${_name}.fastq
+
+[lqr_removal]
+## remove low quality reads, using phred33
+input: pattern = "{name}.fastq"
+output: ["${_name}_lqr_removal.fastq"]
+run:
+fastq_quality_filter -Q33 -q 20 -p 90 -i ${_input} -o ${_output}
+
+[mapping]
+## map to a genome reference build
+## mapping is only on known junctions, on transcriptome only, 
+input: pattern = "{name}.fastq"
+output: ["${_name}.${reference_name}.bam"]
+run:
+bowtie -p ${cpu_number} -S -m 1 ${bowtie_index} ${_input} ${_name}.${reference_name}.sam
+samtools view -bS -o ${_output} ${_name}.${reference_name}.sam
+samtools flagstat ${_output} > ${_output}.flagstat

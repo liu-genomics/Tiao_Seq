@@ -6,7 +6,7 @@ output: html_document
 
 **160620**
 
-He-Lu-6_48ng-S3_L001_R1_001
+### He-Lu-6_48ng-S3_L001_R1_001
 
 ```
 no mismatch, mapped distinct reads : 7.57 million
@@ -21,7 +21,7 @@ total reads from raw data: 24 million
 
 **160604**
 
-20160601_5hmC_Jump_Seq_48ng
+### 20160601_5hmC_Jump_Seq_48ng
 
 ```
 no mismatch, mapped distinct reads : 13.9 million
@@ -36,7 +36,7 @@ total reads from raw data:
 
 **160521**
 
-He-Lu-lu-1-48ng_S1_L006_R1_001
+### He-Lu-lu-1-48ng_S1_L006_R1_001
 ```
 no mismatch, mapped distinct reads : 9.5 million
 no mismatch, mapped total reads: 12.6 million
@@ -50,7 +50,7 @@ total reads from raw data: 31 million
 
 **160511**
 
-CHe-Lu-1_S12_L005_R1_001
+### CHe-Lu-1_S12_L005_R1_001
 ```
 no mismatch, mapped distinct reads : 7.0 million
 no mismatch, mapped total reads: 7.9 million
@@ -63,7 +63,7 @@ total reads from raw data: 18.375 million
 ```
 **160402**
 
-He-lu-6_S6_L006_R1_001
+### He-lu-6_S6_L006_R1_001
 ```
 no mismatch, mapped distinct reads : 4.0 million
 no mismatch, mapped total reads: 4.5 million

@@ -1,6 +1,9 @@
+
 ---
 title: "The number of reads lost at each step for previous 5hmc samples"
-output: html_document
+output:
+  html_document:
+    toc: true
 ---
 
 
@@ -8,7 +11,7 @@ output: html_document
 
 
 
-323T_hmC_jump_cfDNA
+### 323T_hmC_jump_cfDNA
 
 ```
 no mismatch, mapped distinct reads : 0.29 million
@@ -16,3 +19,40 @@ no mismatch, mapped total reads: 14.6 million
 no mismatch, with Jump barcode, before mapping: 33.8 million
 total reads from raw data: 42.3 million
 ```
+
+### 323A_gDNA_input
+
+```
+default mismatch allowed, uniquely mappable reads: 27.2 million
+total reads from raw data: 41.1 million
+```
+
+### 323A_gDNA_seal
+
+```
+default mismatch allowed, uniquely mappable reads: 37.2 million
+total reads from raw data: 50.3 million
+```
+
+### 323T_gDNA_input
+
+```
+default mismatch allowed, uniquely mappable reads: 29.2 million
+total reads from raw data: 45.0 million
+```
+
+### 323T_gDNA_seal
+
+```
+default mismatch allowed, uniquely mappable reads: 35.3 million
+total reads from raw data: 47.2 million
+```
+
+### 323T_hmC_seal_cfDNA
+
+```
+default mismatch allowed, uniquely mappable reads: 39.6 million
+total reads from raw data: 48.2 million
+```
+
+### 
