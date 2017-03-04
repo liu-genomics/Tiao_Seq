@@ -11,7 +11,7 @@ output:
 
 ```{r}
 library(ggplot2)
-#library(gplots)
+library(gplots)
 library(data.table)
 source("../lib/170302_genomic_peak_processing_tools.R")
 ```
