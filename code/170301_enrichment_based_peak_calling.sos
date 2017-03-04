@@ -1,0 +1,30 @@
+#!/usr/bin/env sos-runner
+#fileformat=sos 0.8.4.1
+
+# this script is used to call peaks from enrichment-based experiment comparing treatment with control
+
+
+from glob import glob
+from subprocess import check_output
+
+parameter: data_folder = '../data/' # where the raw .gz files are in the system
+parameter: file_name1 = str # treatment bam file
+parameter: file_name2 = str # control bam file
+parameter: output_prefix = str # output_prefix to be chosens
+parameter: keepdup = str # "all" or "1", meaning if duplicates were kept or not
+parameter: genome = 'hs' # default is human
+
+
+
+[macs2_call_peak]
+## gunzip the raw sequencing file with a filename file_name
+
+treatment_file = data_folder + file_name1
+control_file = data_folder + file_name2
+files = [treatment_file, control_file]
+output_prefix_abs = data_folder + output_prefix
+input: files
+output: ["${output_prefix_abs}.keep_dup_${keepdup}_peaks.narrowPeak"]
+run: 
+macs2 callpeak -t ${_input[0]} -c ${_input[1]} -f BAM -g ${genome} -n ${output_prefix_abs}.keep_dup_${keepdup} --qvalue 0.05 --keep-dup ${keepdup}
+
