@@ -1,0 +1,115 @@
+---
+title: "plot Jump-seq reads distribution"
+Author: Yuwen Liu
+output:
+  html_document:
+    toc: true
+---
+
+Deduplicate reads based on UMI info. 
+analyze with 160811 data. 
+
+
+```{r,echo=FALSE}
+setwd("/media/yuwen/Elements/Tiao_Seq/analysis")
+source("../lib/draw_reads_distribution.R")
+knitr::opts_chunk$set(fig.width = 10,fig.height = 5)
+options(warn=-1)
+```
+
+\newpage
+* plus reads and minus sites
+
+```{r,echo=FALSE,fig.width=5,fig.height=5}
+#plus reads and minus sites
+
+a = read.delim("../data/Data/160811/20160811_5hmC_Jump_Seq_1.2ng.umi_encoded_adaptor_removed.sorted.dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+b = read.delim("../data/Data/160811/20160811_5hmC_Jump_Seq_0.6ng.umi_encoded_adaptor_removed.sorted.dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+c = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_48ng.umi_encoded_adaptor_removed.sorted.dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+d = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_24ng.umi_encoded_adaptor_removed.sorted.dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+e = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_12ng.umi_encoded_adaptor_removed.sorted.dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+f = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_6ng.umi_encoded_adaptor_removed.sorted.dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+g = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_2.4ng.umi_encoded_adaptor_removed.sorted.dedup.bam.minus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+
+data = cbind(a,b,c,d,e,f,g)
+
+test = orgnize_table(data,7,c("5hmc-1.2ng","5hmc-0.6ng","5mc-48ng","5mc-24ng","5mc-12ng","5mc-6ng","5mc-2.4ng"),seq(-100,100,1))
+
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=5}
+draw_plot_together(test,mode = "original")
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=6}
+draw_plot_separate(test,mode = "original")
+```
+
+\newpage
+
+```{r,echo=FALSE,fig.width=10,fig.height=5}
+draw_plot_together(test,mode = "normalized")
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=6}
+draw_plot_separate(test,mode = "normalized")
+```
+
+\newpage
+* minus reads and plus sites, raw reads distribution
+
+```{r,echo=FALSE,fig.width=5,fig.height=5}
+#plus reads and minus sites
+
+a = read.delim("../data/Data/160811/20160811_5hmC_Jump_Seq_1.2ng.umi_encoded_adaptor_removed.sorted.dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+b = read.delim("../data/Data/160811/20160811_5hmC_Jump_Seq_0.6ng.umi_encoded_adaptor_removed.sorted.dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+c = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_48ng.umi_encoded_adaptor_removed.sorted.dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+d = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_24ng.umi_encoded_adaptor_removed.sorted.dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+e = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_12ng.umi_encoded_adaptor_removed.sorted.dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+f = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_6ng.umi_encoded_adaptor_removed.sorted.dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+g = read.delim("../data/Data/160811/20160811_5mC_Jump_Seq_2.4ng.umi_encoded_adaptor_removed.sorted.dedup.bam.plus_sites_with_1_coverage.ave.perbase", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+
+
+
+data = cbind(a,b,c,d,e,f,g)
+
+test = orgnize_table(data,7,c("5hmc-1.2ng","5hmc-0.6ng","5mc-48ng","5mc-24ng","5mc-12ng","5mc-6ng","5mc-2.4ng"),seq(-100,100,1))
+
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=5}
+draw_plot_together(test,mode = "original")
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=6}
+draw_plot_separate(test,mode = "original")
+```
+
+\newpage
+
+```{r,echo=FALSE,fig.width=10,fig.height=5}
+draw_plot_together(test,mode = "normalized")
+```
+
+```{r,echo=FALSE,fig.width=10,fig.height=6}
+draw_plot_separate(test,mode = "normalized")
+```
+

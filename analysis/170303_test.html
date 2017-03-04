@@ -9,9 +9,10 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Yuwen" />
 
 
-<title></title>
+<title>Untitled</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,6 +26,49 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 
 
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
 
 
 <style type="text/css">
@@ -282,80 +326,31 @@ div.tocify {
 
 
 
+<h1 class="title toc-ignore">Untitled</h1>
+<h4 class="author"><em>Yuwen</em></h4>
+<h4 class="date"><em>March 3, 2017</em></h4>
 
 </div>
 
 
-<h1 style="color:grey;font-family:arial; position:relative; top:15px;text-align:center;">
-Collaboration J project<img src="website_materials/research_website_logo.png"  style="float:right;width:200px;height:150px;">
-</h1>
-<p><br></p>
-<hr />
-<div id="available-data-set" class="section level3">
-<h3>0. <strong>Available data set</strong></h3>
-<ul>
-<li>Project data list shared in Google drive <a href="https://drive.google.com/open?id=1WesFCQTrFplnXRKCHmhqtm1529DHc5Sc2tX7GkRa_-U">Click…</a>.</li>
-</ul>
-<p><br></p>
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre></div>
+<pre><code>##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00</code></pre>
 </div>
-<div id="spike-in-distribution" class="section level3">
-<h3>1. <strong>spike-in distribution</strong></h3>
-<ul>
-<li><p>161116 1-site,2-site,and negative control, stringent mapping, PCR duplicates removed <a href="./161120_161116_spike_in_data_plot_reads_distribution.html">[More…]</a>.</p></li>
-<li><p>160917_160811 1-site spike-in, mapping allowing for mismatches, PCR duplicates removed <a href="./160912_plot_reads_distribution_UMI_dedupped.html">[More…]</a>.</p></li>
-<li><p>170120_first, mapping not allowing for mismatches, PCR duplicates removed <a href="./170204_170120_first_batch_spike_in_plot_reads_distribution.html">[More…]</a>.</p></li>
-</ul>
-<p><br></p>
-</div>
-<div id="real-data-distribution" class="section level3">
-<h3>2. <strong>Real data distribution</strong></h3>
-<ul>
-<li><p>160912_160620, compared to Tab-Seq all peaks, mapping allowing mismatches, PCR duplicates removed <a href="./160912_plot_reads_distribution_UMI_dedupped.html">[More…]</a>.</p></li>
-<li><p>161120_160620, compared to Tab-Seq FDR 0.484 peaks, mapping allowing mismatches, PCR duplicates removed <a href="./161120_160620_data_plot_reads_distribution.html">[More…]</a>.</p></li>
-<li><p>170120_first data, compared to Tab-Seq FDR 0.484 peaks, mapping not allowing mismatches, PCR duplicates removed <a href="./170204_170120_first_batch_data_plot_reads_distribution.html">[More…]</a>.</p></li>
-</ul>
-<p><br></p>
-</div>
-<div id="shengtong-peak-overlap-analysis" class="section level3">
-<h3>3. <strong>Shengtong peak overlap analysis</strong></h3>
-<ul>
-<li>drop_box_share made by Shengtong Han <a href="./JumpSeq_dropbox_shengtong.pdf">[More…]</a>.</li>
-</ul>
-<p><br></p>
-</div>
-<div id="paired-end-sequencing-analysis" class="section level3">
-<h3>4. <strong>Paired end sequencing analysis</strong></h3>
-<ul>
-<li><p>161218 analysis pipeline <a href="./161218_paired_end_reads_mapping_pipeline.html">[More…]</a>.</p></li>
-<li><p>161218 pipeline, 20161130 5hmc data, processed reads number and mappable reads number <a href="./161218_161130_paired_end_reads_statistics.html">[More…]</a>.</p></li>
-<li><p>161218 pipeilne, 20161130 5mc data, processed reads number and mapped reads number <a href="./161222_161130_5mc_paired_end_reads_statistics.html">[More…]</a>.</p></li>
-<li><p>161218 pipeline, 20170110 5mc data, processed reads number and mapped reads number <a href="./170115_170110_paired_end_reads_statistics.html">[More…]</a>.</p></li>
-</ul>
-<p><br></p>
-</div>
-<div id="distinct-reads-saturation-analysis" class="section level3">
-<h3>5. <strong>distinct reads Saturation analysis</strong></h3>
-<ul>
-<li>161226 analysis for all previous 5hmc 48 ng data and one 2.4 ng data <a href="./161226_previous_5hmc_distinct_reads_saturation_analysis.html">[More…]</a></li>
-</ul>
-<p><br></p>
-</div>
-<div id="investigation-on-reads-lost-at-each-preprocessing-step" class="section level3">
-<h3>6. <strong>Investigation on reads lost at each preprocessing step</strong></h3>
-<ul>
-<li><p>Investiage reads lost at each step for all previous up to 160811 48ng 5hmc data <a href="./170207_previous_5hmc_samples_reads_lost_at_each_preprocessing_step.html">[More…]</a>.</p></li>
-<li><p>Explore why there is a low mappability rate for reads with a Jump-Seq barcode. Use 160402 5hmc data (He-lu-6_S6_L006_R1_001). Randomly picked 10 reads, 6 reads have multiple alignments, 6 reads would have been mapped if allowing for 2 or 3 mismatches, 3 reads are not mapped even if allowing for 3 mismatches <a href="./170210_investigate_low_mappability_issue.html">[More…]</a>.</p></li>
-<li><p>170120_second, cell free DNA Jump-Seq (323T_hmC_jump_cfDNA) reads statistics at each step <a href="./170210_20170120_second_human_cf_5hmc_samples_reads_lost_at_each_preprocessing_step.html">[More…]</a>.</p></li>
-</ul>
-<p><br></p>
-</div>
-<div id="peaks-compariosn" class="section level3">
-<h3>7. Peaks compariosn</h3>
-<ul>
-<li>compare gDNA hmc seal peaks from tumor samples to from adjacent tissues. Also compare cell-free DNA hmc seal sites with these sites <a href="./170210_20170120_second_human_cf_5hmc_samples_peak_comparison.html">[More…]</a>.</li>
-</ul>
-<hr />
-<p><strong>Last updated:</strong> 2017-03-03 21:12:10</p>
+<div id="including-plots" class="section level2">
+<h2>Including Plots</h2>
+<p>You can also embed plots, for example:</p>
+<p><img src="170303_test_files/figure-html/pressure-1.png" width="672" /></p>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
 </div>
 
 
