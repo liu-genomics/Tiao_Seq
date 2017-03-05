@@ -11,7 +11,7 @@
 
 
 
-<title></title>
+<title>compare replicates consistency between gDNA seal peaks and cfDNA seal peaks</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -325,28 +325,63 @@ div.tocify {
 
 
 
+<h1 class="title toc-ignore">compare replicates consistency between gDNA seal peaks and cfDNA seal peaks</h1>
 
 </div>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre></div>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(gplots)</code></pre></div>
+<pre><code>## KernSmooth 2.23 loaded
+## Copyright M. P. Wand 1997-2009</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gplots&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     lowess</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
+<span class="kw">source</span>(<span class="st">&quot;../lib/170302_genomic_peak_processing_tools.R&quot;</span>)</code></pre></div>
+<div id="the-overlap-percentage-of-one-peak-against-other-peaks-using-distinct-reads" class="section level3">
+<h3>The overlap percentage of one peak against other peaks, using distinct reads</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">peak_list =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;../unified_data_repo/20170120_second/323A_gDNA_seal_vs_323A_gDNA_input.keep_dup_1_peaks.narrowPeak&quot;</span>,
+              <span class="st">&quot;../unified_data_repo/20170120_second/323T_gDNA_seal_vs_323T_gDNA_input.keep_dup_1_peaks.narrowPeak&quot;</span>,
+              <span class="st">&quot;../unified_data_repo/20170120_second/323T_hmc_seal_cfDNA_vs_323T_cfDNA_input.keep_dup_1_peaks.narrowPeak&quot;</span>)
+
+sample_name &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;323A_gDNA_seal_dup_1&quot;</span>,
+                 <span class="st">&quot;323T_gDNA_seal_dup_1&quot;</span>,
+                 <span class="st">&quot;323T_hmc_seal_cfDNA_dup_1&quot;</span>)
+
+<span class="kw">peak_pairwise_comparions</span>(<span class="dt">peak_list=</span> peak_list, <span class="dt">overlap =</span> <span class="fl">1e-9</span>, <span class="dt">sample_name =</span> sample_name)</code></pre></div>
+<pre><code>## Warning in heatmap.2(overlap_pct, Rowv = FALSE, Colv = FALSE, cellnote
+## = round(overlap_pct, : Discrepancy: Rowv is FALSE, while dendrogram is
+## `both&#39;. Omitting row dendogram.</code></pre>
+<pre><code>## Warning in heatmap.2(overlap_pct, Rowv = FALSE, Colv = FALSE, cellnote
+## = round(overlap_pct, : Discrepancy: Colv is FALSE, while dendrogram is
+## `column&#39;. Omitting column dendogram.</code></pre>
+<p><img src="170210_20170120_second_human_cf_5hmc_samples_peak_comparison_standard_html_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(<span class="kw">seq</span>(<span class="dv">1</span>:<span class="dv">10</span>), <span class="dt">lwd =</span> <span class="dv">3</span>)</code></pre></div>
+<p><img src="170210_20170120_second_human_cf_5hmc_samples_peak_comparison_standard_html_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(<span class="kw">seq</span>(<span class="dv">1</span>:<span class="dv">10</span>))</code></pre></div>
+<p><img src="170210_20170120_second_human_cf_5hmc_samples_peak_comparison_standard_html_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="170302_test_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="the-overlap-percentage-of-one-peak-against-other-peaks-using-all-reads" class="section level3">
+<h3>The overlap percentage of one peak against other peaks, using all reads</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">peak_list =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;../unified_data_repo/20170120_second/323A_gDNA_seal_vs_323A_gDNA_input.keep_dup_all_peaks.narrowPeak&quot;</span>,
+              <span class="st">&quot;../unified_data_repo/20170120_second/323T_gDNA_seal_vs_323T_gDNA_input.keep_dup_all_peaks.narrowPeak&quot;</span>,
+              <span class="st">&quot;../unified_data_repo/20170120_second/323T_hmc_seal_cfDNA_vs_323T_cfDNA_input.keep_dup_all_peaks.narrowPeak&quot;</span>)
+
+sample_name &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;323A_gDNA_seal_dup_1&quot;</span>,
+                 <span class="st">&quot;323T_gDNA_seal_dup_1&quot;</span>,
+                 <span class="st">&quot;323T_hmc_seal_cfDNA_dup_1&quot;</span>)
+
+<span class="kw">peak_pairwise_comparions</span>(<span class="dt">peak_list=</span> peak_list, <span class="dt">overlap =</span> <span class="fl">1e-9</span>, <span class="dt">sample_name =</span> sample_name)</code></pre></div>
+<pre><code>## Warning in heatmap.2(overlap_pct, Rowv = FALSE, Colv = FALSE, cellnote
+## = round(overlap_pct, : Discrepancy: Rowv is FALSE, while dendrogram is
+## `both&#39;. Omitting row dendogram.</code></pre>
+<pre><code>## Warning in heatmap.2(overlap_pct, Rowv = FALSE, Colv = FALSE, cellnote
+## = round(overlap_pct, : Discrepancy: Colv is FALSE, while dendrogram is
+## `column&#39;. Omitting column dendogram.</code></pre>
+<p><img src="170210_20170120_second_human_cf_5hmc_samples_peak_comparison_standard_html_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 
 
