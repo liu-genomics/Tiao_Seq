@@ -1,0 +1,86 @@
+---
+title: "Reads statistics of 170110 paired-end reads data"
+output: html_document
+---
+
+***
+
+***
+
+```{r,echo=FALSE}
+source("../lib/check_reads_and_mapping_for_single_cell_libraries.R")
+```
+
+
+> <span style="color:red; font-family:arial; font-size:1em;">CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L001_R1_001</span>
+
+
+```{r,echo=FALSE,cache=TRUE}
+temp = draw_reads_single_cell("CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L001_R1_001","../data/Data/20170110/5hmC_Jump_seq_mES_single_cell/", 2)
+```
+
+
+```{r,echo=FALSE}
+read_number = c(prettyNum(as.numeric(temp$starting_r1)/4,big.mark = ","),
+prettyNum(as.numeric(temp$umi_encoded_adaptor_removed_empty_removed_r1)/4,big.mark = ","))
+
+knitr::kable(data.frame(reads = c("raw","after trimming adaptors at both ends"), read_number))
+
+hist(log(1+as.numeric(temp$single_cell_r1),10), breaks = 100, main = "Distribution of log10(Reads+1) over single cells")
+mapped_reads = draw_mapped_dedup_reads_single_cell_temp("CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L001_R1_001","../data/Data/20170110/5hmC_Jump_seq_mES_single_cell/")
+hist(log(mapped_reads+1), breaks = 100, main = "Distribution of log10(mapped_reads+1) over single cells")
+```
+
+> <span style="color:red; font-family:arial; font-size:1em;">CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L002_R1_001</span>
+
+```{r,echo=FALSE,cache=TRUE}
+temp = draw_reads_single_cell("CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L002_R1_001","../data/Data/20170110/5hmC_Jump_seq_mES_single_cell/",2)
+```
+
+
+```{r,echo=FALSE}
+read_number = c(prettyNum(as.numeric(temp$starting_r1)/4,big.mark = ","),
+prettyNum(as.numeric(temp$umi_encoded_adaptor_removed_empty_removed_r1)/4,big.mark = ","))
+
+knitr::kable(data.frame(reads = c("raw","after trimming adaptors at both ends"), read_number))
+
+hist(log(1+as.numeric(temp$single_cell_r1),10), breaks = 100, main = "Distribution of log10(Reads+1) over single cells")
+mapped_reads = draw_mapped_dedup_reads_single_cell_temp("CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L002_R1_001","../data/Data/20170110/5hmC_Jump_seq_mES_single_cell/")
+hist(log(mapped_reads+1), breaks = 100, main = "Distribution of log10(mapped_reads+1) over single cells")
+```
+
+> <span style="color:red; font-family:arial; font-size:1em;">CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L003_R1_001</span>
+
+```{r,echo=FALSE,cache=TRUE}
+temp = draw_reads_single_cell("CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L003_R1_001","../data/Data/20170110/5hmC_Jump_seq_mES_single_cell/",2)
+```
+
+
+```{r,echo=FALSE}
+read_number = c(prettyNum(as.numeric(temp$starting_r1)/4,big.mark = ","),
+prettyNum(as.numeric(temp$umi_encoded_adaptor_removed_empty_removed_r1)/4,big.mark = ","))
+
+knitr::kable(data.frame(reads = c("raw","after trimming adaptors at both ends"), read_number))
+
+hist(log(1+as.numeric(temp$single_cell_r1),10), breaks = 100, main = "Distribution of log10(Reads+1) over single cells")
+mapped_reads = draw_mapped_dedup_reads_single_cell_temp("CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L003_R1_001","../data/Data/20170110/5hmC_Jump_seq_mES_single_cell/")
+hist(log(mapped_reads+1), breaks = 100, main = "Distribution of log10(mapped_reads+1) over single cells")
+```
+
+> > <span style="color:red; font-family:arial; font-size:1em;">CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L004_R1_001</span>
+
+```{r,echo=FALSE,cache=TRUE}
+temp = draw_reads_single_cell("CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L004_R1_001","../data/Data/20170110/5hmC_Jump_seq_mES_single_cell/",2)
+```
+
+
+```{r,echo=FALSE}
+read_number = c(prettyNum(as.numeric(temp$starting_r1)/4,big.mark = ","),
+prettyNum(as.numeric(temp$umi_encoded_adaptor_removed_empty_removed_r1)/4,big.mark = ","))
+
+knitr::kable(data.frame(reads = c("raw","after trimming adaptors at both ends"), read_number))
+
+hist(log(1+as.numeric(temp$single_cell_r1),10), breaks = 100, main = "Distribution of log10(Reads+1) over single cells")
+mapped_reads = draw_mapped_dedup_reads_single_cell_temp("CHe-Lu-1_5hmC-jump-seq-single_cell_S1_L004_R1_001","../data/Data/20170110/5hmC_Jump_seq_mES_single_cell/")
+hist(log(mapped_reads+1), breaks = 100, main = "Distribution of log10(mapped_reads+1) over single cells")
+```

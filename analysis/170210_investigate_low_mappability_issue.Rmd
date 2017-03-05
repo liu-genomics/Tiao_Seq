@@ -1,0 +1,157 @@
+---
+title: "Untitled"
+author: "Yuwen Liu"
+date: "February 10, 2017"
+output: html_document
+---
+
+Randomly choose unmapped reads from He-lu-6_S6_L006_R1_001.umi_encoded_adaptor_removed_allow_2_mismatch_unmapped.sam, and see how the mappability would change if I use different mapping parameters. 
+
+
+> <span style="color:green; font-family:arial; font-size:1em;">AGGAATATGGCAAGAAAACTGAAAATCATGGAAA</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of multiple alignment after skipping the 1st base</span>
+
+```
+bowtie -m 1 -n 0 -l 35  -c ../../other_annotations/bowtie1_indexed_genome/mm9 AGGAATATGGCAAGAAAACTGAAAATCATGGAAA
+
+0	-	chr9	3000082	TTTCCATGATTTTCAGTTTTCTTGCCATATTCCT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	0	
+# reads processed: 1
+# reads with at least one reported alignment: 1 (100.00%)
+# reads that failed to align: 0 (0.00%)
+
+
+bowtie -a -n 0 -l 35  -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 AGGAATATGGCAAGAAAACTGAAAATCATGGAAA
+
+0	+	chr12	3109973	GGAATATGGCAAGAAAACTGAAAATCATGGAAA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	1	
+0	+	chr9	35112935	GGAATATGGCAAGAAAACTGAAAATCATGGAAA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	1	
+0	-	chr9	3022679	TTTCCATGATTTTCAGTTTTCTTGCCATATTCC	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	47	
+0	-	chr9	3025427	TTTCCATGATTTTCAGTTTTCTTGCCATATTCC	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	47	
+
+```
+
+> <span style="color:green; font-family:arial; font-size:1em;">ACCTGGAATATGGCAGAAAACTTAAAATCACTGA</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of multiple alignment, also has one mismatch</span>
+
+```
+bowtie -a -n 2 -l 35  -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 ACCTGGAATATGGCAGAAAACTTAAAATCACTGA
+0	-	chr9	3005464	TCAGTGATTTTAAGTTTTCTGCCATATTCCAGG	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	21:C>A
+0	-	chr9	3011336	TCAGTGATTTTAAGTTTTCTGCCATATTCCAGG	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	21:C>A
+0	-	chr9	3008918	TCAGTGATTTTAAGTTTTCTGCCATATTCCAGG	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	21:C>A
+# reads processed: 1
+# reads with at least one reported alignment: 1 (100.00%)
+# reads that failed to align: 0 (0.00%)
+
+bowtie -a -n 2 -l 35 -c ../../other_annotations/bowtie1_indexed_genome/mm9 ACCTGGAATATGGCAGAAAACTTAAAATCACTGA
+0	-	chr9	3008918	TCAGTGATTTTAAGTTTTCTGCCATATTCCAGGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	22:C>A
+0	-	chr9	3005464	TCAGTGATTTTAAGTTTTCTGCCATATTCCAGGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	22:C>A
+0	-	chr9	3011336	TCAGTGATTTTAAGTTTTCTGCCATATTCCAGGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	22:C>A
+# reads processed: 1
+# reads with at least one reported alignment: 1 (100.00%)
+# reads that failed to align: 0 (0.00%)
+Reported 3 alignments to 1 output stream(s)
+
+```
+
+> <span style="color:green; font-family:arial; font-size:1em;">GAAACCTACCTGCCTGATTACCAGGAAAATACCA</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of 2 mismatches at the beginning</span>
+
+```
+bowtie -m 1 -l 35 -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 GAAACCTACCTGCCTGATTACCAGGAAAATACCA
+0	-	chr4	100652457	TGGTATTTTCCTGGTAATCAGGCAGGTAGGTTT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	0	0:A>T,1:G>T
+# reads processed: 1
+# reads with at least one reported alignment: 1 (100.00%)
+# reads that failed to align: 0 (0.00%)
+Reported 1 alignments to 1 output stream(s)
+
+```
+
+> <span style="color:green; font-family:arial; font-size:1em;">GTGTTCTTAACCTATTTTGTTTCCTTACCTGGGA</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of more than 2 mismatches</span>
+
+```
+bowtie -a -n 2 -l 35 -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 GTGTTCTTAACCTATTTTGTTTCCTTACCTGGGA
+# reads processed: 1
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 1 (100.00%)
+No alignments
+
+```
+
+> <span style="color:green; font-family:arial; font-size:1em;">ATATGGCAAGAAAACTGAAAATCATGGAAAATGA</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of more than 2 mismatches</span>
+
+```
+bowtie -a -n 2 -l 35 -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 ATATGGCAAGAAAACTGAAAATCATGGAAAATGA
+0	+	chr2	98507418	TATGGCAAGAAAACTGAAAATCATGGAAAATGA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	
+0	+	chr9	35112939	TATGGCAAGAAAACTGAAAATCATGGAAAATGA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	
+0	+	chr12	3109977	TATGGCAAGAAAACTGAAAATCATGGAAAATGA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	2	
+```
+
+> <span style="color:green; font-family:arial; font-size:1em;">ATATTCGACGTCCTACAGTGGACATTTCTAAATT</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of more than 2 mismatches and multiple alignments</span>
+
+```
+bowtie -a -n 2 -l 35 -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 ATATTCGACGTCCTACAGTGGACATTTCTAAATT
+0	-	chr2	98502988	AATTTAGAAATGTCCACTGTAGGACGTCGAATA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	0	5:G>C
+0	-	chr2	98507136	AATTTAGAAATGTCCACTGTAGGACGTCGAATA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	0	2:G>A,5:G>C
+0	-	chr12	3109946	AATTTAGAAATGTCCACTGTAGGACGTCGAATA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	0	5:G>C,7:A>G
+0	-	chr9	35113142	AATTTAGAAATGTCCACTGTAGGACGTCGAATA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	1	5:G>C,32:T>A
+0	-	chr2	98506902	AATTTAGAAATGTCCACTGTAGGACGTCGAATA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	1	5:G>C,32:T>A
+
+```
+
+> <span style="color:green; font-family:arial; font-size:1em;">GTGAAGGAGGATTCTCTGTAGCAGTAAGAAGTCT</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped even if allowing for 3 mismatches</span>
+
+```
+bowtie -a -n 3 -l 35 -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 GTGAAGGAGGATTCTCTGTAGCAGTAAGAAGTCT
+# reads processed: 1
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 1 (100.00%)
+No alignments
+
+```
+> <span style="color:green; font-family:arial; font-size:1em;">CGTTTTGCAGTTATTTCATCATTTTTCAAGTCGT</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of multiple alignments and multiple mismatches</span>
+
+```
+bowtie -a -n 2 -l 35 -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 CGTTTTGCAGTTATTTCATCATTTTTCAAGTCGT
+0	+	chr9	3027014	GTTTTGCAGTTATTTCATCATTTTTCAAGTCGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	5	5:T>G,10:G>T
+0	+	chr9	3000675	GTTTTGCAGTTATTTCATCATTTTTCAAGTCGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	5	5:T>G,10:G>T
+0	+	chr9	3023506	GTTTTGCAGTTATTTCATCATTTTTCAAGTCGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	5	5:T>G,10:G>T
+0	+	chr9	3030058	GTTTTGCAGTTATTTCATCATTTTTCAAGTCGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	5	5:T>G,10:G>T
+0	+	chr9	3031576	GTTTTGCAGTTATTTCATCATTTTTCAAGTCGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	5	5:T>G,10:G>T
+0	+	chr9	3028418	GTTTTGCAGTTATTTCATCATTTTTCAAGTCGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	5	5:T>G,10:G>T
+# reads processed: 1
+# reads with at least one reported alignment: 1 (100.00%)
+# reads that failed to align: 0 (0.00%)
+Reported 6 alignments to 1 output stream(s)
+```
+
+> <span style="color:green; font-family:arial; font-size:1em;">ATGCAATCCCCATCAAAATTCCAACTCAATTCTA</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of multiple alignments and multiple mismatches</span>
+
+
+```
+bowtie -a -n 2 -l 35 -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 ATGCAATCCCCATCAAAATTCCAACTCAATTCTA | head
+0	+	chr12	61599670	TGCAATCCCCATCAAAATTCCAACTCAATTCTA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	26	
+0	+	chr17	4681109	TGCAATCCCCATCAAAATTCCAACTCAATTCTA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	26	
+0	+	chr12	79388167	TGCAATCCCCATCAAAATTCCAACTCAATTCTA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	26	
+0	+	chr2	22006383	TGCAATCCCCATCAAAATTCCAACTCAATTCTA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	26	
+0	+	chr9	12798363	TGCAATCCCCATCAAAATTCCAACTCAATTCTA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	26	
+0	+	chrX	55856469	TGCAATCCCCATCAAAATTCCAACTCAATTCTA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	26	
+0	+	chr5	138413161	TGCAATCCCCATCAAAATTCCAACTCAATTCTA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	26	
+0	+	chrX	37038888	TGCAATCCCCATCAAAATTCCAACTCAATTCTA	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	26	
+```
+
+> <span style="color:green; font-family:arial; font-size:1em;">CAAAATAAGTATGCATTTCTCATTTTCACGTTTT</span>
+> <span style="color:green; font-family:arial; font-size:1em;">unmapped because of multiple alignments and multiple mismatches</span>
+
+
+```
+bowtie -a -n 3 -l 35 -5 1 -c ../../other_annotations/bowtie1_indexed_genome/mm9 CAAAATAAGTATGCATTTCTCATTTTCACGTTTT
+# reads processed: 1
+# reads with at least one reported alignment: 0 (0.00%)
+# reads that failed to align: 1 (100.00%)
+No alignments
+```
