@@ -1,0 +1,72 @@
+---
+output:
+  html_document:
+    toc: true
+---
+
+<h1 style="color:grey;font-family:arial; position:relative; top:15px;text-align:center;">Collaboration J project<img src="website_materials/research_website_logo.png"  style="float:right;width:200px;height:150px;"></h1>
+<br>
+
+***
+### 0. **Available data set**
+
+* Project data list shared in Google drive  [Click...](https://drive.google.com/open?id=1WesFCQTrFplnXRKCHmhqtm1529DHc5Sc2tX7GkRa_-U).
+
+<br>
+
+### 1. **spike-in distribution**
+
+* 161116 1-site,2-site,and negative control, stringent mapping, PCR duplicates removed  [[More...]](./161120_161116_spike_in_data_plot_reads_distribution.html).
+
+* 160917_160811 1-site spike-in, mapping allowing for mismatches, PCR duplicates removed  [[More...]](./160912_plot_reads_distribution_UMI_dedupped.html).
+
+* 170120_first, mapping not allowing for mismatches, PCR duplicates removed  [[More...]](./170204_170120_first_batch_spike_in_plot_reads_distribution.html).
+
+<br>
+
+### 2. **Real data distribution**
+* 160912_160620, compared to Tab-Seq all peaks, mapping allowing mismatches, PCR duplicates removed  [[More...]](./160912_plot_reads_distribution_UMI_dedupped.html).
+
+* 161120_160620, compared to Tab-Seq FDR 0.484 peaks, mapping allowing mismatches, PCR duplicates removed  [[More...]](./161120_160620_data_plot_reads_distribution.html).
+
+* 170120_first data, compared to Tab-Seq FDR 0.484 peaks, mapping not allowing mismatches, PCR duplicates removed  [[More...]](./170204_170120_first_batch_data_plot_reads_distribution.html).
+
+<br>
+
+### 3. **Shengtong peak overlap analysis**
+* drop_box_share made by Shengtong Han  [[More...]](./JumpSeq_dropbox_shengtong.pdf).
+
+<br>
+
+### 4. **Paired end sequencing analysis**
+* 161218 analysis pipeline  [[More...]](./161218_paired_end_reads_mapping_pipeline.html).
+
+* 161218 pipeline, 20161130 5hmc data, processed reads number and mappable reads number  [[More...]](./161218_161130_paired_end_reads_statistics.html).
+
+* 161218 pipeilne, 20161130 5mc data, processed reads number and mapped reads number  [[More...]](./161222_161130_5mc_paired_end_reads_statistics.html).
+
+* 161218 pipeline, 20170110 5mc data, processed reads number and mapped reads number  [[More...]](./170115_170110_paired_end_reads_statistics.html).
+
+<br>
+
+### 5. **distinct reads Saturation analysis**
+* 161226 analysis for all previous 5hmc 48 ng data and one 2.4 ng data  [[More...]](./161226_previous_5hmc_distinct_reads_saturation_analysis.html)
+
+<br>
+
+### 6. **Investigation on reads lost at each preprocessing step**
+* Investiage reads lost at each step for all previous up to 160811 48ng 5hmc data  [[More...]](./170207_previous_5hmc_samples_reads_lost_at_each_preprocessing_step.html).
+
+* Explore why there is a low mappability rate for reads with a Jump-Seq barcode. Use 160402 5hmc data (He-lu-6_S6_L006_R1_001). Randomly picked 10 reads, 6 reads have multiple alignments, 6 reads would have been mapped if allowing for 2 or 3 mismatches, 3 reads are not mapped even if allowing for 3 mismatches  [[More...]](./170210_investigate_low_mappability_issue.html).
+
+* 170120_second, cell free DNA Jump-Seq (323T_hmC_jump_cfDNA) reads statistics at each step  [[More...]](./170210_20170120_second_human_cf_5hmc_samples_reads_lost_at_each_preprocessing_step.html).
+
+<br>
+
+### 7. Peaks compariosn
+* compare gDNA hmc seal peaks from tumor samples to from adjacent tissues. Also compare cell-free DNA hmc seal sites with these sites [[More...]](./170304_test.html).
+
+
+***
+
+**Last updated:** `r Sys.time()`
