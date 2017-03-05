@@ -23,6 +23,15 @@ Start to host web sites in analysis folder.
     + Then on RCC, pull master, set up the gh-pages branch, only push htmls to gh-pages
     + under this setup there won't be conflicts between local machine and RCC.
     + could write a code on RCC to automatically generate html on RCC and release html to github gh-pages
+  * Some helpful commands that I will use 
+    + Use `git rm --cached FILENAME` to delete it from the repository but keep the file physically and `git add FILENAME` to add a file to your repository. You will need to commit both of these changes with git commit
+    + Use the above code to rm all htmls in analysis on local and push to remote, does remove all analysis/*.htmls on remote
+    + now will go RCC, 
+```
+git rm -r -f --cached analysis/
+cd analysis/
+
+```
     
 ## Apr 2017
 
