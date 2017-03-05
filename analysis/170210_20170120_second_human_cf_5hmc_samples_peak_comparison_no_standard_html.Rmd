@@ -1,0 +1,54 @@
+
+---
+title: "compare replicates consistency between gDNA seal peaks and cfDNA seal peaks"
+output:
+  html_document:
+    self_contained: no
+    toc: yes
+  standalone:
+  pdf_document:
+    toc: yes
+---
+
+
+```{r}
+library(ggplot2)
+library(gplots)
+library(data.table)
+source("../lib/170302_genomic_peak_processing_tools.R")
+```
+
+### The overlap percentage of one peak against other peaks, using distinct reads
+```{r, cache=TRUE, cache.extra=peak_pairwise_comparions}
+peak_list = c("../unified_data_repo/20170120_second/323A_gDNA_seal_vs_323A_gDNA_input.keep_dup_1_peaks.narrowPeak",
+              "../unified_data_repo/20170120_second/323T_gDNA_seal_vs_323T_gDNA_input.keep_dup_1_peaks.narrowPeak",
+              "../unified_data_repo/20170120_second/323T_hmc_seal_cfDNA_vs_323T_cfDNA_input.keep_dup_1_peaks.narrowPeak")
+
+sample_name <- c("323A_gDNA_seal_dup_1",
+                 "323T_gDNA_seal_dup_1",
+                 "323T_hmc_seal_cfDNA_dup_1")
+
+peak_pairwise_comparions(peak_list= peak_list, overlap = 1e-9, sample_name = sample_name)
+```
+
+```{r}
+hist(seq(1:10), lwd = 3)
+```
+
+```{r}
+hist(seq(1:10))
+```
+
+### The overlap percentage of one peak against other peaks, using all reads
+```{r, cache=TRUE, cache.extra=peak_pairwise_comparions}
+peak_list = c("../unified_data_repo/20170120_second/323A_gDNA_seal_vs_323A_gDNA_input.keep_dup_all_peaks.narrowPeak",
+              "../unified_data_repo/20170120_second/323T_gDNA_seal_vs_323T_gDNA_input.keep_dup_all_peaks.narrowPeak",
+              "../unified_data_repo/20170120_second/323T_hmc_seal_cfDNA_vs_323T_cfDNA_input.keep_dup_all_peaks.narrowPeak")
+
+sample_name <- c("323A_gDNA_seal_dup_1",
+                 "323T_gDNA_seal_dup_1",
+                 "323T_hmc_seal_cfDNA_dup_1")
+
+peak_pairwise_comparions(peak_list= peak_list, overlap = 1e-9, sample_name = sample_name)
+```
+
