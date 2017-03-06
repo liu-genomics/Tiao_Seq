@@ -26,7 +26,9 @@ Start to host web sites in analysis folder.
   * Some helpful commands that I will use 
     + Use `git rm --cached FILENAME` to delete it from the repository but keep the file physically and `git add FILENAME` to add a file to your repository. You will need to commit both of these changes with git commit
     + Use the above code to rm all htmls in analysis on local and push to remote, does remove all analysis/*.htmls on remote
-    + now will go RCC, 
+    + edit `.gitignore` to ignore `analysis/*.html` and `index.html`
+    + now will go RCC, use `git pull origin master` to pull down all updated *.Rmd files on master branch on RCC
+    + using `git checkout -b gh-pages` to generate 
 ```
 git rm -r -f --cached analysis/
 cd analysis/
