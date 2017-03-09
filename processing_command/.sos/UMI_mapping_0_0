@@ -1,0 +1,10 @@
+bowtie -p 4 -S -m 1 -n 0 -l 35 -5 1 ../other_annotations/bowtie1_indexed_genome/mm9 ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed.fastq ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch.sam
+samtools view -bS ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch.sam -o ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch.bam
+rm ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch.sam
+samtools sort ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch.bam ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch_sorted
+rm ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch.bam
+samtools index ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch_sorted.bam
+/media/yuwen/F/tools/miniconda3/bin/umi_tools dedup -I ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch_sorted.bam \
+-S ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam -L ../data/Data/20170120_second/323T_hmC_jump_cfDNA.UMI_dedup_no_mismatch.log
+samtools flagstat ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam > ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.flagstat
+

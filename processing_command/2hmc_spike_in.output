@@ -1,0 +1,25 @@
+INFO: Executing [32mUMI_mapping_1[0m: map to spike in reference
+INFO: UMI_mapping_1 input:    [32m['../data/Data/20170120_first/Jump-2hmC-sites.umi_encoded_adaptor_removed.fastq'][0m
+INFO: Step [32mUMI_mapping_1[0m (index=0) is [32mignored[0m due to saved signature
+INFO: UMI_mapping_1 output:   [32m['../data/Data/20170120_first/Jump-2hmC-sites.161116_5hmc_2sites_spikein.umi_encoded_adaptor_removed_no_mismatch.sam'][0m
+INFO: Executing [32mUMI_mapping_2[0m: transform to bam file and get output statistics, only get the mapped reads
+INFO: UMI_mapping_2 input:    [32m['../data/Data/20170120_first/Jump-2hmC-sites.161116_5hmc_2sites_spikein.umi_encoded_adaptor_removed_no_mismatch.sam'][0m
+[samopen] SAM header is present: 1 sequences.
+[bam_sort_core] merging from 2 files...
+Killed
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "/media/yuwen/F/tools/miniconda3/lib/python3.5/threading.py", line 914, in _bootstrap_inner
+    self.run()
+  File "/media/yuwen/F/tools/miniconda3/lib/python3.5/site-packages/sos-0.8.4.1-py3.5.egg/sos/utils.py", line 1011, in run
+    with self.term.location(0, self.term.height - self.get_index() - 1):
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+
+[91mERROR[0m: [91mFailed to execute workflow UMI_mapping
+[UMI_mapping_2] RuntimeError:
+	Failed to process statement run(r"""samtools view -bS -F 4...tat\n\n""")\n: Failed to execute script (ret=137). 
+Please use command
+    /bin/bash /media/yuwen/Elements/Tiao_Seq/processing_command/.sos/UMI_mapping_2_0
+under /media/yuwen/Elements/Tiao_Seq/processing_command to test it.
+[UMI_mapping] RuntimeError:
+	1 failed step: UMI_mapping_2[0m

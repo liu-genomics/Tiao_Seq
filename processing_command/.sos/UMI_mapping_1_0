@@ -1,0 +1,2 @@
+bowtie -p 6 -S -m 1 -n 0 -l 35 -5 1 ../other_annotations/bowtie1_indexed_genome/hg19 ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed.fastq ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.sam
+

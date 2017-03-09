@@ -1,0 +1,7 @@
+# macs2 callpeak -t ../unified_data_repo/20170120_second/323T_hmC_seal_cfDNA.hg19_bowtie1.bam -c ../unified_data_repo/20170120_second/323T_cfDNA_input.hg19_bowtie1.bam -f BAM -g hs -n ../unified_data_repo/20170120_second/323T_hmc_seal_cfDNA_vs_323T_cfDNA_input.keep_dup_all -qvalue 0.05 --keep-dup all
+# 
+# 
+# step_sig: 189b89a0f3d462e2f445540a9ecda2da
+#started at Thursday, 02. March 2017 12:29AM
+#
+#time	proc_cpu	proc_mem	children	children_cpu	children_mem
