@@ -31,7 +31,7 @@ Start to host web sites in analysis folder.
     + on RCC master branch, run Rscript to generate htmls from updated Rmds
     + using `git checkout -b gh-pages` to generate a new gh-pages (only do this for the first time to generate this releasing branch)
     + remember to change the `.gitgnore` file in gh-pages to not ignore *.html files
-    + in the RCC gh-pages branch, add index.html and analysis*.html, and commit and push to gh-pages
+    + in the RCC gh-pages branch, pull from master by "git pull origin master", then generate index.html and analysis*.html, and commit and push to gh-pages
     + This set up will ensure there is no conflict between the operation on my local desktop and RCC. The files other than index.html and analysis/*.html on gh-pages would be freezed at the moment that the gh-pages was generated
 
 ```

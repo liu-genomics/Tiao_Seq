@@ -3,7 +3,7 @@ navbar:
   title: Collaboration J Project
   left:
     - text: "Home"
-      href: index.html
+      href: ../index.html
     - text: "About"
       href: about.html
     - text: "Meeting"
