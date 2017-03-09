@@ -1,0 +1,7 @@
+# bowtie -p 6 -S -m 1 -n 0 -l 35 -5 1 ../other_annotations/ ../data/Data/20170120_first/Jump-NC-1.umi_encoded_adaptor_removed.fastq ../data/Data/20170120_first/Jump-NC-1.160811_5hmc_spikein.umi_encoded_adaptor_removed_no_mismatch.sam
+# 
+# 
+# step_sig: 17a81ab261c7ab51509b890ba6d5b62e
+#started at Tuesday, 31. January 2017 12:39PM
+#
+#time	proc_cpu	proc_mem	children	children_cpu	children_mem

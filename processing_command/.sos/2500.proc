@@ -1,0 +1,8 @@
+# gunzip -c ../unified_data_repo/20170120_second/323A_gDNA_input.fastq.gz > ../unified_data_repo/20170120_second/323A_gDNA_input.fastq
+# 
+# 
+# step_sig: fd861b15a350fc590527ffe18248da00
+#started at Wednesday, 01. March 2017 12:37AM
+#
+#time	proc_cpu	proc_mem	children	children_cpu	children_mem
+1488350257.417537	0.00	872448	1	0.0	2605056

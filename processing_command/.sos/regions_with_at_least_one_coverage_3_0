@@ -1,0 +1,6 @@
+rm -f ../data/Data/../data/Data/20170120_first/Jump-positive.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.plus_sites_with_1_coverage.ave.perbase
+for i in {1..201} 
+
+do awk -v i="$i" '$5 == i' ../data/Data/20170120_first/Jump-positive.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.plus_sites_with_1_coverage.bedGraph | awk '{print $6}'|paste -s -d+ | bc >> ../data/Data/20170120_first/Jump-positive.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup.bam.plus_sites_with_1_coverage.ave.perbase
+done
+

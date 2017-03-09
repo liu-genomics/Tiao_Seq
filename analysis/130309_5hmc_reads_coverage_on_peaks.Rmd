@@ -1,0 +1,16 @@
+
+---
+title: "Reads 5 prime coverage on peaks"
+output:
+  html_document:
+    toc: true
+---
+
+```{r}
+source("../lib/170204_mapping_reads_to_bed.R")
+```
+
+## Use p300 reads and p300 peaks in mouse ES cells as a positive control for code testing
+
+```{r, cache = TRUE, cache.extra = }
+```

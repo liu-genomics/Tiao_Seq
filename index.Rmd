@@ -66,6 +66,9 @@ output:
 ### 7. Peaks compariosn
 * compare gDNA hmc seal peaks from tumor samples to from adjacent tissues. Also compare cell-free DNA hmc seal sites with these sites [[More...]](./analysis/170210_20170120_second_human_cf_5hmc_samples_peak_comparison.html).
 
+* Plot 5'ends of 5hmc reads on mES p300 peaks [[More...]](./analysis/170309_5hmc_reads_coverage_on_peaks.html).
+
+* Future analysis of other things
 
 ***
 

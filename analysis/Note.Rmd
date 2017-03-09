@@ -26,13 +26,32 @@ Start to host web sites in analysis folder.
   * Some helpful commands that I will use 
     + Use `git rm --cached FILENAME` to delete it from the repository but keep the file physically and `git add FILENAME` to add a file to your repository. You will need to commit both of these changes with git commit
     + Use the above code to rm all htmls in analysis on local and push to remote, does remove all analysis/*.htmls on remote
-    + now will go RCC, 
+    + edit `.gitignore` to ignore `analysis/*.html` and `index.html`
+    + now will go RCC, use `git pull origin master` to pull down all updated *.Rmd files on master branch on RCC
+    + on RCC master branch, run Rscript to generate htmls from updated Rmds
+    + using `git checkout -b gh-pages` to generate a new gh-pages (only do this for the first time to generate this releasing branch)
+    + remember to change the `.gitgnore` file in gh-pages to not ignore *.html files
+    + in the RCC gh-pages branch, add index.html and analysis*.html, and commit and push to gh-pages
+    + This set up will ensure there is no conflict between the operation on my local desktop and RCC. The files other than index.html and analysis/*.html on gh-pages would be freezed at the moment that the gh-pages was generated
+
 ```
 git rm -r -f --cached analysis/
 cd analysis/
 
 ```
-    
+
+### 170308
+  * Need to find active enhancer regions in mES cells. Possible candidates are
+    + p300 peaks mentioned in Tab-Seq
+    + Open chromatin regions mentioned in Tab-Seq
+    + Other epigenomic histone marks
+  * Need to use these information to plot the distribution of Jump-Seq reads. The relevant lib that I will use for plotting is `../lib/170204_mapping_reads_to_bed.R
+  * Waiting Shengtong analysis results from compare peak consistency between combined replicates and compare peaks to 5hmc Seal peaks identified by Dali Han
+
+### 170309
+  * Get mouse ES cells epigenomics dataset from Gary Hon.  GSM723018 for mES P300 ChIP-Seq.  GSM723020 for INPUT, will call peaks (remove dup, qvalue 0.05, then select intersected peaks across replicates).
+  * Also get `../other_annotations/epigenomic_annotation/Shen_et_al_2012_Nature_mES_cells_Enhancer_in_Table_S7.bed`, but the bed file has overlapped peaks and the sizes of the peaks are too big. 
+
 ## Apr 2017
 
 ### 170401
