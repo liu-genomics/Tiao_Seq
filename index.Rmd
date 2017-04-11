@@ -22,6 +22,8 @@ output:
 
 * 170120_first, mapping not allowing for mismatches, PCR duplicates removed  [[More...]](./analysis/170204_170120_first_batch_spike_in_plot_reads_distribution.html).
 
+* 170321, using one positive control sequence and two negative control sequence [[More...]](./analysis/170330_20170321_spike_in_analysis.html). 
+
 <br>
 
 ### 2. **Real data distribution**
@@ -61,6 +63,9 @@ output:
 
 * 170120_second, cell free DNA Jump-Seq (323T_hmC_jump_cfDNA) reads statistics at each step  [[More...]](./analysis/170210_20170120_second_human_cf_5hmc_samples_reads_lost_at_each_preprocessing_step.html).
 
+* 170321 5hmc data, from a protocol that is supposed to reduce the sequencing array and to have more distinct reads [[More...]](./analysis/170330_20170321_5hmc_samples_reads_lost_at_each_preprocessing_step.html).
+
+* Reads lost at each step for all 0.6ng 5hmc Jump-Seq data [[More...]](./analysis/170407_0.6ng_5hmc_samples_reads_lost_at_each_preprocessing_step.html).
 <br>
 
 ### 7. Peaks compariosn
@@ -68,7 +73,9 @@ output:
 
 * Plot 5'ends of 5hmc reads on mES p300 peaks [[More...]](./analysis/170309_5hmc_reads_coverage_on_peaks.html).
 
-* Future analysis of other things
+* Reads coverage comparion between rep1 and rep2 on 1kb windows enriched for pooled 5hmc Jump-Seq reads (pooled from 11 replicates) [[More..]](./analysis/170410_big_rep1_rep2_reads_coverage_in_1kb_enriched_windows.html).
+
+* Compare 0.6ng 5hmc Jump-Seq read 5' ends with 1kb windows enriched for pooled 5hmc Jump-Seq reads (pooled from 11 replicates) [[More...]](./analysis/170410_0.6ng_5hmc_reads_overlap_with_48ng_peaks.html).
 
 ***
 
