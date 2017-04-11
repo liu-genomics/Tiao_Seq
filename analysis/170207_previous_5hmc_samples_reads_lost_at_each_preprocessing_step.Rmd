@@ -74,3 +74,58 @@ allows 2 mismatches in the seed region, mapped total reads: 5.4 million
 allows 2 mismatches in the seed region, with Jump barcode, before mapping: 9.1 million
 total reads from raw data: 11.9 million
 ```
+
+**20161116**
+
+### 20161115_5hmC_Jump_Seq_2hmC_spike_in.mm9
+```
+no mismatch, mapped distinct reads : 10.1 million
+no mismatch, mapped total reads: 12.5 million
+no mismatch, with Jump barcode, before mapping: 27.5 million
+total reads from raw data: 32.5 million
+```
+
+### 20161115_5hmC_Jump_Seq_negative_control_spike_in.mm9
+**The distinct reads rate of this sample seem to be lower than other samples.**
+```
+no mismatch, mapped distinct reads : 11.7 million
+no mismatch, mapped total reads: 19.4 million
+no mismatch, with Jump barcode, before mapping: 42.2 million
+total reads from raw data: 50 million
+```
+
+### 20161115_5hmC_Jump_Seq_positive_control_spike_in.mm9
+```
+no mismatch, mapped distinct reads : 11.1 million
+no mismatch, mapped total reads: 14.6 million
+no mismatch, with Jump barcode, before mapping: 30 million
+total reads from raw data: 35 million
+```
+
+
+
+**20170120_first**
+
+### Jump-2hmC-sites.mm9
+```
+no mismatch, mapped distinct reads : 10.1 million
+no mismatch, mapped total reads: 18.0 million
+no mismatch, with Jump barcode, before mapping: 46 million
+total reads from raw data: 54 million
+```
+
+### Jump-NC-2.mm9
+```
+no mismatch, mapped distinct reads : 7.9 million
+no mismatch, mapped total reads: 11.1 million
+no mismatch, with Jump barcode, before mapping: 29 million
+total reads from raw data: 30.5 million
+```
+
+###  Jump-positive.mm9
+```
+no mismatch, mapped distinct reads : 7.3 million
+no mismatch, mapped total reads: 10.3 million
+no mismatch, with Jump barcode, before mapping: 23 million
+total reads from raw data: 27 million
+```

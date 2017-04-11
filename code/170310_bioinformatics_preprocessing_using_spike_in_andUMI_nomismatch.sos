@@ -1,0 +1,170 @@
+#!/usr/bin/env sos-runner
+#fileformat=sos 0.8.4.1
+
+# this script works with the current sos.
+
+# Use bowtie2 for mapping spike-ins, because previuosly allows N in the reference
+# This script will do some bioinformatics preprocessing for Jump-Seq data
+# Example code to run
+# sos run 160408_test.sos -- -j 6
+# the V2 version provides a parameter so that the pipeline only processes files refered by the prameters
+# this script uses UMI information to collapse PCR duplicates
+# this scripts only maps spike-ins, one parameter to choose which spike in libraries to use
+# doesn't allow mismatch and skip the 1st base
+
+
+from glob import glob
+from subprocess import check_output
+
+parameter: data_folder = '../data/Data/' # where the raw .gz files are in the system
+parameter: file_name = str # The name of a file that will be processed
+parameter: spike_in = '../other_annotations/' # choose a bowtie pre-build index basename e.g., 160811_5mc_spikein
+parameter: spike_in_base_name = str # a string that will append to the output files to indicate what spike-in references are used. 
+
+
+[gunzip: shared = {"gunzip_output": "output"}]
+## gunzip the raw sequencing file with a filename file_name
+
+raw_file = data_folder + file_name
+
+input: raw_file, pattern = "{name}.fastq.gz"
+output: ["${_name}.fastq"]
+run:
+gunzip -c ${_input} > ${_name}.fastq
+
+[trimming]
+# only partition reads to UMI part and sequence part
+input: pattern = "{name}.fastq"
+output: ["${_name}.adaptor_removed.fastq"]
+run:	concurrent = True
+fastx_trimmer -f 9 -i ${_input} -Q 33 -o ${_name}.with_adaptor.fastq
+fastx_trimmer -f 1 -l 8 -i ${_input} -Q 33 -o ${_name}.UMI
+## discard reads without adaptors
+cutadapt --discard-untrimmed -g ^TGACTCG -o ${_output} ${_name}.with_adaptor.fastq
+
+[mapping_1]
+#map to spike-ins
+input: pattern = "{name}.adaptor_removed.fastq"
+output: ["${_name}.${spike_in_base_name}.adaptor_removed.sam"]
+run:
+bowtie -p 6 -S -m 1 ${spike_in} ${_input} ${_output}
+
+[mapping_2]
+#transform to bam file and get output statistics
+input: pattern = "{name}.${spike_in_base_name}.adaptor_removed.sam"
+output: ["${_name}.${spike_in_base_name}.adaptor_removed.bam.flagstat"]
+run:
+samtools view -bS ${_input} -o ${_name}.${spike_in_base_name}.adaptor_removed.bam
+samtools flagstat ${_name}.${spike_in_base_name}.adaptor_removed.bam > ${_output}
+
+[UMI_encoding]
+# encode UMI information to the name of each read by umi_tools, use spike-ins
+input: pattern = "{name}.fastq"
+output: ["${_name}.umi_encoded_adaptor_removed.fastq"]
+run:
+/media/yuwen/F/tools/miniconda3/bin/umi_tools extract -p NNNNNNNN --quality-filter-threshold 20 --quality-encoding phred33 -I ${_input} -L ${_name}.UMI_extract.log -S ${_name}.umi_encoded.fastq
+## discard reads without adaptors
+cutadapt --discard-untrimmed -g ^TGACTCG -o ${_output} ${_name}.umi_encoded.fastq
+
+[UMI_mapping_1]
+#map to spike in reference
+#prefix = file_name.split(sep = ".fastq.gz")[0]
+#mapping_input_file = data_folder + prefix + ".umi_encoded_adaptor_removed.fastq"
+input: pattern = "{name}.umi_encoded_adaptor_removed.fastq"
+output: ["${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sam"]
+run:
+bowtie -p 6 -S -m 1 -n 0 -l 35 -5 1 ${spike_in} ${_input} ${_output}
+
+[UMI_mapping_2]
+#transform to bam file and get output statistics, only get the mapped reads
+input: pattern = "{name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sam"
+output:["${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam"]
+run:
+samtools view -bS -F 4 ${_input} -o ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.bam
+samtools sort ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.bam ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted
+samtools index ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.bam
+/media/yuwen/F/tools/miniconda3/bin/umi_tools dedup -I ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.bam -S ${_output} -L ${_name}.${spike_in_base_name}.UMI_dedup_no_mismatch.log
+samtools flagstat ${_output} > ${_output}.flagstat
+
+[UMI_mapping_bowtie2_1]
+#map to human genome hg19
+input: pattern = "{name}.umi_encoded_adaptor_removed.fastq"
+output:["${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sam"]
+run:
+bowtie2 -p 6 -n 0 -l 35 -5 1 -x ${spike_in} -U ${_input} -S ${_output}
+
+[UMI_mapping_bowtie2_2]
+#transform to bam file and get output statistics, only get the mapped reads
+input: pattern = "{name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sam"
+output: ["${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sorted.dedup.bam"]
+run: 
+grep "@" ${_input} > ${_input}.perfect_match.sam
+awk '$6=="35M"' ${_input} >> ${_input}.perfect_match.sam
+samtools view -bS -F 4 ${_input}.perfect_match.sam -o ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.bam
+samtools sort ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.bam ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sorted
+samtools index ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sorted.bam
+/media/yuwen/F/tools/miniconda3/bin/umi_tools dedup -I ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sorted.bam -S ${_output} -L ${_name}.${spike_in_base_name}.UMI_dedup.log
+samtools flagstat ${_output} > ${_output}.flagstat
+
+
+[calculate_coverage_1]
+# from bam files calculate the coverage of 5' relative to the center of the spike in (the 99th nt, 98 nts ahead, and 101 nts after)
+# only the file from minus reads will be used for the downstream analysis, so the minus-reads file is the only one that is defined and should be checked in the output
+prefix = file_name.split(sep = ".fastq.gz")[0]
+cov_input_file = data_folder + prefix + "." + spike_in_base_name + ".umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam" 
+
+input: cov_input_file, pattern = "{name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam"
+output:["${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.5prime.bed"]
+run:
+samtools view -b -F 20 -o ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.plus ${_input} 
+samtools view -b -f 16 -o ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus ${_input} 
+samtools sort ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.plus ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.plus.sorted
+samtools sort ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted
+# for plus strand reads, only keep the 5' position
+bedtools bamtobed -i ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.plus.sorted.bam | awk {'print $1"\t"$2"\t"$2+1"\t"$4"\t"$5"\t"$6'} \
+>  ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.plus.sorted.5prime.bed
+# for minus strand reads,only keep 5' position
+bedtools bamtobed -i ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.bam | awk {'print $1"\t"$3-1"\t"$3"\t"$4"\t"$5"\t"$6'} \
+> ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.5prime.bed
+#remove bam files that are not going to be used
+rm ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.plus
+rm ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus
+rm ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.plus.sorted.bam
+rm ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.bam
+
+[calculate_coverage_2]
+# read in only minus reads because only these reads are generated from methylation sites
+input: pattern = "{name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.5prime.bed"
+depends: ['../lib/pipeline_160912_bioinformatics_preprocessing_using_spike_in_andUMI.R', '../lib/draw_reads_distribution.R']
+output: ["${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.minus.sorted.5prime.bed.coverage.ave.perbase"]
+run: 
+awk '{print $3}' ${_input} | sort | uniq -c | awk '{print $1"\t"$2}' > ${_output}.tmp
+Rscript ../lib/pipeline_160912_bioinformatics_preprocessing_using_spike_in_andUMI.R ${_output}.tmp ${_output} 200
+rm ${_output}.tmp
+
+
+
+[get_1st_base_mutation_spectra]
+# follows UMI_mapping pipelines,UMI_mapping_bowtie2_2. 
+input: pattern = "{name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sorted.dedup.bam"
+output: ["${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sorted.dedup.1st_base_mutational_spectra.txt"]
+run:
+samtools view -h -o ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sorted.dedup.sam ${_input}
+awk '$6=="35M" && $2==16 && $4==65' ${_name}.${spike_in_base_name}.umi_encoded_adaptor_removed.sorted.dedup.sam | awk {'print $10'} > ${_output}.tmp
+grep -P "A$" ${_output}.tmp | wc -l > ${_output}.tmp2
+grep -P "T$" ${_output}.tmp | wc -l >> ${_output}.tmp2
+grep -P "C$" ${_output}.tmp | wc -l >> ${_output}.tmp2
+grep -P "G$" ${_output}.tmp | wc -l >> ${_output}.tmp2
+
+total=$(awk '{s+=$1} END {print s}' ${_output}.tmp2)
+echo "A" > ${_output}.tmp3
+echo "T" >> ${_output}.tmp3
+echo "C" >> ${_output}.tmp3
+echo "G" >> ${_output}.tmp3
+
+awk -v total="$total" {'print $1"\t"($1/total)'} ${_output}.tmp2 > ${_output}.tmp4
+paste ${_output}.tmp3 ${_output}.tmp4 | column -s $'\t' -t > ${_output}
+rm ${_output}.tmp*
+
+
+

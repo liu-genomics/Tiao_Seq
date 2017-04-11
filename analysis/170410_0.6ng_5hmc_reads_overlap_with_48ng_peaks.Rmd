@@ -1,0 +1,48 @@
+---
+title: "Overlap of 0.6ng 6hmc reads with 48ng hmc peaks"
+output: html_document
+---
+
+***
+* In order to evaluate how noisy the 0.6ng 5hmc data would be, we looked at the overlap between the 5' end of each read and the 1kb regions enriched for 48ng (11 replicates combined)5hmc reads. 
+
+* [reads_overlap_peaks] only works for reads generated from **single end sequencing**
+
+***
+```{r}
+source("../lib/170410_compare_bed_to_peaks.R")
+```
+
+### 160402/He-Lu17-lu-15_S5_L005_R1_001
+
+```{r, cache=TRUE}
+### Plus reads
+reads_overlap_peaks("../unified_data_repo/160402/He-Lu17-lu-15_S5_L005_R1_001.mm9.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.bed", "../from_Shengtong/combine11rep.plus.1001.bp.FDR0.05.bed", strand = "plus")
+
+### Minus reads
+reads_overlap_peaks("../unified_data_repo/160402/He-Lu17-lu-15_S5_L005_R1_001.mm9.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.bed", "../from_Shengtong/combine11rep.minus.1001.bp.FDR0.05.bed", strand = "minus")
+
+```
+
+### 160811/20160811_5hmC_Jump_Seq_0.6ng
+
+```{r, cache=TRUE}
+### Plus reads
+reads_overlap_peaks("../unified_data_repo/160811/20160811_5hmC_Jump_Seq_0.6ng.mm9.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.bed", "../from_Shengtong/combine11rep.plus.1001.bp.FDR0.05.bed", strand = "plus")
+
+### Minus reads
+reads_overlap_peaks("../unified_data_repo/160811/20160811_5hmC_Jump_Seq_0.6ng.mm9.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.bed", "../from_Shengtong/combine11rep.minus.1001.bp.FDR0.05.bed", strand = "minus")
+
+```
+
+### 20170120_first/Jump-600pg
+
+```{r, cache=TRUE}
+### Plus reads
+reads_overlap_peaks("../unified_data_repo/20170120_first/Jump-600pg.mm9.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.bed", "../from_Shengtong/combine11rep.plus.1001.bp.FDR0.05.bed", strand = "plus")
+
+### Minus reads
+reads_overlap_peaks("../unified_data_repo/20170120_first/Jump-600pg.mm9.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.bed", "../from_Shengtong/combine11rep.minus.1001.bp.FDR0.05.bed", strand = "minus")
+
+```
+

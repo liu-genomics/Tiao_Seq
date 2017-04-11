@@ -1,0 +1,21 @@
+---
+title: "170321 Spike-in analysis"
+output: html_document
+---
+
+***
+
+This experiment is designed to have 1 positive 5hmc control sites and 2 negative sequences, so that we could use the number of reads observed from positive controls and negative controls to estimate the FDR (defined as the ratio of reads coming from true 5hmc signal)
+
+
+***
+
+The data is 20170321_CHe-Lu-4_S4_L007_R1_001
+
+Without collapsing PCR duplicates reads, there are 22 million mapped to the positive control and 0.78 million mapped on the negative control. 
+
+After collapsing duplicates reads, there are only 0.16 million to positive control and 0.07 million mapped to the negative control. 
+
+You can see the ratio between positive control and negative control goes down from 28 to 2!. 
+
+I think it is most likely because the positive control is so strong that it used up all the available UMI. We have to use the total number of reads here and it is OK if we could show the amplification efficiency of reads are the same from positive control and negative controls. Or we have to use a longer UMI to better address this problem.

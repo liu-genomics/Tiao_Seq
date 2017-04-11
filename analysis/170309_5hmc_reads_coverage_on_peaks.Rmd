@@ -89,3 +89,205 @@ coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160402
 ```{r, dependson=coverage}
 plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
 ```
+
+## Dali_Han_50ng_hmc_Seal_SRR3548042_mm9 
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_hmc_Seal_SRR3548042_mm9.bam",
+                                         bed_file = "../other_annotations/epigenomic_annotation/mES_p300/mES_p300_DM182_DM161_vs_DM186_DM162_consistent_peaks.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+
+# Reads on mES cell Dali Han 5hmc seal peaks
+## He-Lu-6_48ng-S3_L001_R1_001  from 160620
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160620/He-Lu-6_48ng-S3_L001_R1_001.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_seal_merge.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## 20160601_5hmC_Jump_Seq_48ng from 160604
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160604/20160601_5hmC_Jump_Seq_48ng.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_seal_merge.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## He-Lu-lu-1-48ng_S1_L006_R1_001 from 160521
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160521/He-Lu-lu-1-48ng_S1_L006_R1_001.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_seal_merge.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## CHe-Lu-1_S12_L005_R1_001 from 160511
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160511/CHe-Lu-1_S12_L005_R1_001.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_seal_merge.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## He-lu-6_S6_L006_R1_001 from 160402
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160402/../160402/He-lu-6_S6_L006_R1_001.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_seal_merge.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## Dali_Han_50ng_hmc_Seal_SRR3548042_mm9 
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_hmc_Seal_SRR3548042_mm9.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_seal_merge.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+
+## Dali_Han_50ng_hmc_Seal_SRR3548044_INPUT 
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_hmc_input_SRR3548044.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_seal_merge.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+# Reads on Booth_et_al_oxBS_Seq data
+## He-Lu-6_48ng-S3_L001_R1_001  from 160620
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160620/He-Lu-6_48ng-S3_L001_R1_001.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/5hmC_cpg_fdr0.05.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## 20160601_5hmC_Jump_Seq_48ng from 160604
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160604/20160601_5hmC_Jump_Seq_48ng.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/5hmC_cpg_fdr0.05.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## He-Lu-lu-1-48ng_S1_L006_R1_001 from 160521
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160521/He-Lu-lu-1-48ng_S1_L006_R1_001.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/5hmC_cpg_fdr0.05.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## CHe-Lu-1_S12_L005_R1_001 from 160511
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160511/CHe-Lu-1_S12_L005_R1_001.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/5hmC_cpg_fdr0.05.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## He-lu-6_S6_L006_R1_001 from 160402
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../unified_data_repo/160402/../160402/He-lu-6_S6_L006_R1_001.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/5hmC_cpg_fdr0.05.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+## Dali_Han_50ng_hmc_Seal_SRR3548042_mm9 
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_hmc_Seal_SRR3548042_mm9.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/5hmC_cpg_fdr0.05.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+
+## Dali_Han_50ng_hmc_Seal_SRR3548044_INPUT 
+
+```{r, cache = TRUE, cache.extra = plot_5_prime_coverage_on_bed}
+coverage <- plot_5_prime_coverage_on_bed(bam_file = "../other_annotations/other_hmc_data_set/Dali_Han_50ng_hmc_input_SRR3548044.bam",
+                                         bed_file = "../other_annotations/other_hmc_data_set/5hmC_cpg_fdr0.05.bed",
+                                         window_size = 1000,
+                                         read_length = 36)
+```
+
+```{r, dependson=coverage}
+plot(seq(0-floor(length(coverage)/2) , 0+floor(length(coverage)/2)), coverage, xlab = "Distance to peak center", ylab = "5-prime coverage")
+```
+
+
