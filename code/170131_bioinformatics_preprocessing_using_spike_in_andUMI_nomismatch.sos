@@ -1,5 +1,5 @@
 #!/usr/bin/env sos-runner
-#fileformat=sos 0.8.4.1
+#fileformat=sos 0.9.4
 
 # this script works with the current sos.
 
@@ -22,7 +22,7 @@ parameter: spike_in = '../other_annotations/' # choose a bowtie pre-build index 
 parameter: spike_in_base_name = str # a string that will append to the output files to indicate what spike-in references are used. 
 
 
-[gunzip: shared = {"gunzip_output": "output"}]
+[gunzip]
 ## gunzip the raw sequencing file with a filename file_name
 
 raw_file = data_folder + file_name

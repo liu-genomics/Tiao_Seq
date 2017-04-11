@@ -1,0 +1,50 @@
+---
+title: "Overlap of 0.6ng 6hmc reads with 48ng hmc peaks"
+output: html_document
+---
+
+***
+* Identify 1kb regions enriched for Jump-Seq reads by using pooled reads from all 11 48ng biological replicates (FDR < 0.05). These windows could serve as gold standard/true positive. 
+* Count the reads coverage in these 1kb windows using rep1 and rep2, respectively.
+* Plot the coverage across rep1 and rep2 and calculate the correlation coefficient between rep1 and rep2. 
+
+***
+
+
+## plus reads 
+
+```{r,cache=TRUE, echo=FALSE}
+a <- read.delim("../unified_data_repo/reps_combine_5hmc/combine11rep.plus.1001.bp.FDR0.05.rep1.coverage", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+a <- a[,4]
+b <- read.delim("../unified_data_repo/reps_combine_5hmc/combine11rep.plus.1001.bp.FDR0.05.rep2.coverage", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+b <- b[,4]
+
+```
+
+```{r, fig.width=5, fig.height=5}
+# correlation coefficient
+cor(a,b)
+# correlation coefficient, log2 transformed
+cor(log(a+1,2),log(b+1,2))
+# plot
+plot(log(a,2),log(b,2), xlab = "rep1", ylab = "rep2")
+```
+
+## minus reads
+
+```{r,cache=TRUE, echo=FALSE}
+c <- read.delim("../unified_data_repo/reps_combine_5hmc/combine11rep.minus.1001.bp.FDR0.05.rep1.coverage", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+c <- c[,4]
+
+d <- read.delim("../unified_data_repo/reps_combine_5hmc/combine11rep.minus.1001.bp.FDR0.05.rep2.coverage", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+d <- d[,4]
+```
+
+```{r,fig.width=5, fig.height=5}
+# correlation coefficient
+cor(c,d)
+# correlation coefficient, log2 transformed
+cor(log(c+1,2),log(d+1,2))
+# plot
+plot(log(c,2),log(d,2), xlab = "rep1", ylab = "rep2")
+```

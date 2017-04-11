@@ -1,0 +1,43 @@
+---
+title: "The number of reads lost at each step for 20170321 5hmc samples"
+output: html_document
+---
+
+***
+
+This batch of data were made by an updated protocol that is supposed to reduce the number of sequencing errors
+
+
+***
+
+
+### 20170321_CHe-Lu-1_S1_L007_R1_001
+
+```
+no mismatch, mapped distinct reads : 6.1 million
+no mismatch, mapped total reads: 21.0 million
+no mismatch, with Jump barcode, before mapping: 38.25 million
+
+total reads from raw data: 48 million
+```
+
+
+### 20170321_CHe-Lu-2_S2_L007_R1_001
+
+```
+no mismatch, mapped distinct reads : 2.98 million
+no mismatch, mapped total reads: 14.6 million
+no mismatch, with Jump barcode, before mapping: 32.35 million
+total reads from raw data: 40.5 million
+```
+
+
+### 20170321_CHe-Lu-3_S3_L007_R1_001
+```
+no mismatch, mapped distinct reads : 3.14 million
+no mismatch, mapped total reads: 18.9 million
+no mismatch, with Jump barcode, before mapping: 36.7 million
+total reads from raw data: 48.8 million
+
+```
+

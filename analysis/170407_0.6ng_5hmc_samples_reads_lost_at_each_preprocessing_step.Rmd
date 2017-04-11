@@ -1,0 +1,162 @@
+---
+title: "The number of reads lost at each step for 20170321 5hmc samples"
+output: html_document
+---
+
+***
+Look at reads lost at each step for 0.6ng 5hmc samples from different batches.
+The motivation here is to compare the performance of different library prep strategies for making 5hmc library from small amount of cells
+
+
+***
+
+
+### 160402 He-Lu17-lu-15_S5_L005_R1_001
+
+```
+no mismatch, mapped distinct reads : 0.06 million
+no mismatch, mapped total reads:  12.1 million
+no mismatch, with Jump barcode, before mapping: 29 million
+total reads from raw data: 35.2 million
+```
+
+
+### 160811 20160811_5hmC_Jump_Seq_0.6ng
+
+```
+no mismatch, mapped distinct reads : 0.046 million
+no mismatch, mapped total reads: 4.1 million
+no mismatch, with Jump barcode, before mapping: 20.9 million
+total reads from raw data:  25 million
+```
+
+### 20170120_first Jump-600pg
+
+```
+no mismatch, mapped distinct reads : 0.19 million
+no mismatch, mapped total reads: 0.19 million
+no mismatch, with Jump barcode, before mapping: 12.7 million
+total reads from raw data: 29.1 million
+
+```
+
+### 20170331 CHe-Lu-8s-Lu-4_S4_L001
+
+```
+no mismatch, mapped distinct reads : 0.0032 million
+no mismatch, mapped total reads: 0.96 million
+with Jump-barcode and cell barcode (after removing command adaptors from 3'ends of reads):4.8
+with Jump-barcode: 8.7 million
+total reads from raw data: 16 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-4_S4_L002
+
+```
+no mismatch, mapped distinct reads :  million
+no mismatch, mapped total reads: 0.99 million
+with Jump-barcode and cell barcode:4.9 million
+with Jump-barcode: 8.8 million
+total reads from raw data: 16 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-4_S4_L003
+
+```
+no mismatch, mapped distinct reads : 0.0034 million
+no mismatch, mapped total reads: 1.01 million
+with Jump-barcode and cell barcode: 5.2 million
+with Jump-barcode: 9 million
+total reads from raw data: 16.5 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-4_S4_L004
+
+```
+no mismatch, mapped distinct reads : 0.0033 million
+no mismatch, mapped total reads: 1.00 million
+with Jump-barcode and cell barcode: 4.9 million
+with Jump-barcode: 8.9 million
+total reads from raw data: 16.3 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-5_S5_L001
+
+```
+no mismatch, mapped distinct reads : 0.0023 million
+no mismatch, mapped total reads: 0.86 million
+with Jump-barcode and cell barcode: 4.9 million
+with Jump-barcode: 8.7 million
+total reads from raw data: 16.7 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-5_S5_L002
+
+```
+no mismatch, mapped distinct reads : 0.0022 million
+no mismatch, mapped total reads: 0.88 million
+with Jump-barcode and cell barcode: 5.0 million
+with Jump-barcode: 8.7 million
+total reads from raw data: 16.5 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-5_S5_L003
+
+```
+no mismatch, mapped distinct reads : 0.0023 million
+no mismatch, mapped total reads: 0.89 million
+with Jump-barcode and cell barcode: 5.1 million
+with Jump-barcode: 9.0 million
+total reads from raw data: 17.1 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-5_S5_L004
+
+```
+no mismatch, mapped distinct reads : 0.0024 million
+no mismatch, mapped total reads: 0.88 million
+with Jump-barcode and cell barcode: 5 million
+with Jump-barcode: 8.8 million
+total reads from raw data: 16.7 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-6_S6_L001
+
+```
+no mismatch, mapped distinct reads : 0.0051 million
+no mismatch, mapped total reads: 2.3 million
+with Jump-barcode and cell barcode: 9.2 million
+with Jump-barcode: 12.4 million
+total reads from raw data: 22.2 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-6_S6_L002
+
+```
+no mismatch, mapped distinct reads : 0.0050 million
+no mismatch, mapped total reads: 2.4 million
+with Jump-barcode and cell barcode: 9.4 million
+with Jump-barcode: 12.5 million
+total reads from raw data: 22.1 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-6_S6_L003
+
+```
+no mismatch, mapped distinct reads : 0.0051 million
+no mismatch, mapped total reads: 2.4 million
+with Jump-barcode and cell barcode: 9.7 million
+with Jump-barcode: 12.9 million
+total reads from raw data: 23 million
+```
+
+### 20170331 CHe-Lu-8s-Lu-6_S6_L004
+
+```
+no mismatch, mapped distinct reads : 0.0050 million
+no mismatch, mapped total reads: 2.4 million
+with Jump-barcode and cell barcode: 9.45 million
+with Jump-barcode: 12.6 million 
+total reads from raw data: 22.5 million
+```
+
