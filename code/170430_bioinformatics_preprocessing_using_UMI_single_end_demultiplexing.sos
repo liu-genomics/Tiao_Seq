@@ -1,0 +1,75 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# This script will do some bioinformatics preprocessing for Jump-Seq data
+# It needs to handel the following situations:
+# 1. For each sample, there are a few pairs of sequencing data.
+# 2. Jump barcode among studies (Thus needs to be better specified as parameters).
+# 3. Doesn't have transposase barcode that is read from Read2
+# 3. Need to count the number of reads that have Jump barcode
+
+# The library molecule configuration is stored in Sample\ Note.docx file in ../unified_data_repo/20170331/
+# But only single end sequencing is performed
+
+
+parameter: data_folder = '../data/Data/' # where the raw .gz files are in the system
+parameter: file_names = str
+parameter: Jump_barcode = str # The barcode of Jump-Seq
+parameter: Jump_barcode_RC = str # The reverse complement of Jump-Seq barcode
+parameter: cell_barcode = str # The barcode of cell specific barcode
+parameter: cell_barcode_RC = str # The reverse complement of Cell specific barcode
+parameter: mapping_reference = '../other_annotations/' # choose a bowtie pre-build index basename e.g., 160811_5mc_spikein
+parameter: reference_base_name = str # a string that will append to the output files to indicate what spike-in references are used. 
+
+[gunzip]
+## gunzip the raw sequencing files in file_names (Read1)
+raw_files = data_folder + file_names
+
+input: raw_files, pattern = "{name}.fastq.gz"
+output: ["${_name}.fastq"]
+run:
+gunzip -c ${_input} > ${_output}
+
+
+
+[UMI_encoding]
+#encode UMI information to the name of each read by umi_tools, and remove reads without Jump-Seq barcode
+input: pattern = "{name}.{ext}"
+output: ["${_name}.umi_encoded_adaptor_removed_empty_removed.fastq"]
+task: concurrent = True
+run:
+/media/yuwen/F/tools/miniconda3/bin/umi_tools extract -p NNNNNNNN --quality-filter-threshold 20 --quality-encoding phred33 \
+-I ${_input} -L ${_name}.UMI_extract.log -S ${_name}.umi_encoded.fastq
+
+## discard reads without Jump-seq adaptors 
+cutadapt --discard-untrimmed -g ^${Jump_barcode} -o ${_name}.umi_encoded.fastq.temp.fastq ${_name}.umi_encoded.fastq
+
+## get the lines/reads number of Read1 that have a Jump Barcode
+wc -l ${_name}.umi_encoded.fastq.temp.fastq > ${_name}.umi_encoded.fastq.temp.fastq.linenum
+
+rm ${_name}.umi_encoded.fastq
+
+
+## trim reads at the 3'ends to remove sequences from universal adaptors, also remove empty reads
+# -a is the plus strand downstream of the genomic DNA insert (From Read1)
+cutadapt --minimum-length 1 -a CTGTCTCTTATACACATCT${cell_barcode}AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -o ${_output} ${_name}.umi_encoded.fastq.temp.fastq 
+
+
+wc -l ${_output[0]} > ${_output[0]}.linenum
+
+
+[UMI_mapping]
+#map to mouse mm9, don't allow for running multiple pairs of samples at one time, but will use 6 CPUs for one pair at one time. 
+input: pattern = "{prefix}.umi_encoded_adaptor_removed_empty_removed.fastq"
+output: ["${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.flagstat"]
+task: concurrent = True
+run:
+bowtie -p 1 -S -m 1 -n 0 -l 35 -5 1 ${mapping_reference} ${_input} ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sam
+samtools view -bS ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sam -o ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.bam
+rm ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sam
+samtools sort ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.bam ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted
+rm ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.bam
+samtools index ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.bam
+/media/yuwen/F/tools/miniconda3/bin/umi_tools dedup -I ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.bam \
+-S ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam -L ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.log
+samtools flagstat ${_prefix}.${reference_base_name}.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam > ${_output}
