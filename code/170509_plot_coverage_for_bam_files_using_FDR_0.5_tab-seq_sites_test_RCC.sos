@@ -26,9 +26,10 @@ output: ["${_name}_${reference_sites_name}_plus_with_1_coverage.ave.perbase","${
 run:
 samtools view -b -F 20 -o ${_name}.bam.plus ${_input} 
 samtools view -b -f 16 -o ${_name}.bam.minus ${_input} 
-  ${_name}.bam.plus ${_name}.plus.sorted
+samtools sort ${_name}.bam.plus ${_name}.plus.sorted
 samtools sort ${_name}.bam.minus ${_name}.minus.sorted
 
+#
 
 # for plus strand reads, only keep the 5' position
 bedtools bamtobed -i ${_name}.plus.sorted.bam | awk {'print $1"\t"$2"\t"$2+1"\t"$4"\t"$5"\t"$6'} \
