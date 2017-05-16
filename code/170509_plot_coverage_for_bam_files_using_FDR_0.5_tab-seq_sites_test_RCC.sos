@@ -1,0 +1,73 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# This script is adapted from 161120_plot_coverage_for_bam_files_using_FDR_0.5_tab-seq_sites.sos
+# 161120_plot_coverage_for_bam_files_using_FDR_0.5_tab-seq_sites.sos is a script that works for the older versions of sos
+# The bam file used here must be from single-end sequencing experiments. 
+
+from glob import glob
+from subprocess import check_output
+
+
+parameter: data_folder = '../data/Data/' # where the raw .gz files are in the system
+parameter: file_name = str # the name of the bam file that needs to be plotted
+parameter: plus_reference_regions = str # The name of the reference regions on the plus strand. e.g., ../other_annotations/other_hmc_data_set/GSM882244_mESC.hmC_sites.FDR_0.0484.mm9.txt_plus.extend_100bp_separated.bed
+parameter: minus_reference_regions = str # The name of the reference regions on the minus strand. e.g., ../other_annotations/other_hmc_data_set/GSM882244_mESC.hmC_sites.FDR_0.0484.mm9.txt_minus.extend_100bp_separated.bed
+parameter: reference_sites_name = str # The name that should be assigned to the reference sites. e.g., GSM882244_mESC_FDR_0.0484_extended_separated
+
+[get_coverage]
+# generate bed files with only 5prime ends for both plus reads and minus reads, 
+#the output sequence matters to match plus strand read with minus 
+#strand methylation regions.
+
+bam_file = data_folder + file_name
+input: bam_file, pattern = "{name}.bam"
+output: ["${_name}_${reference_sites_name}_plus_with_1_coverage.ave.perbase","${_name}_${reference_sites_name}_minus_with_1_coverage.ave.perbase"]
+run:
+samtools view -b -F 20 -o ${_name}.bam.plus ${_input} 
+samtools view -b -f 16 -o ${_name}.bam.minus ${_input} 
+  ${_name}.bam.plus ${_name}.plus.sorted
+samtools sort ${_name}.bam.minus ${_name}.minus.sorted
+
+
+# for plus strand reads, only keep the 5' position
+bedtools bamtobed -i ${_name}.plus.sorted.bam | awk {'print $1"\t"$2"\t"$2+1"\t"$4"\t"$5"\t"$6'} \
+> ${_name}.bam.plus.sorted.5prime.bed
+# for minus strand reads,only keep 5' position
+bedtools bamtobed -i ${_name}.minus.sorted.bam | awk {'print $1"\t"$3-1"\t"$3"\t"$4"\t"$5"\t"$6'} \
+> ${_name}.bam.minus.sorted.5prime.bed
+
+
+
+# only retain plus reference sites that have at least Jump-Seq read from the minus strand
+bedtools intersect -wa -a ${plus_reference_regions} -b ${_name}.bam.minus.sorted.5prime.bed | sort | uniq > ${_name}_${reference_sites_name}_plus_with_1_coverage.bed
+# get reads coverage for plus sites that have at least one read
+bedtools coverage -a ${_name}.bam.minus.sorted.5prime.bed -b ${_name}_${reference_sites_name}_plus_with_1_coverage.bed -d > ${_name}_${reference_sites_name}_plus_with_1_coverage.bedGraph
+
+
+# only retain minus reference sites that have at least Jump-Seq read from the plus strand
+bedtools intersect -wa -a ${minus_reference_regions} -b ${_name}.bam.plus.sorted.5prime.bed | sort | uniq > ${_name}_${reference_sites_name}_minus_with_1_coverage.bed
+# get reads coverage for minus sites that have at least one read
+bedtools coverage -a ${_name}.bam.plus.sorted.5prime.bed -b ${_name}_${reference_sites_name}_minus_with_1_coverage.bed -d > ${_name}_${reference_sites_name}_minus_with_1_coverage.bedGraph
+
+
+# now generate avg coverage profiles on plus sites
+rm -f ${_name}_${reference_sites_name}_plus_with_1_coverage.ave.perbase
+for i in {1..201} 
+
+do awk -v i="$i" '$5 == i' ${_name}_${reference_sites_name}_plus_with_1_coverage.bedGraph | awk '{print $6}'|paste -s -d+ | bc >> ${_output[0]}
+done
+
+
+# now generate avg coverage profiles on minus sites
+
+rm -f ${_name}_${reference_sites_name}_minus_with_1_coverage.ave.perbase
+for i in {1..201} 
+
+do awk -v i="$i" '$5 == i' ${_name}_${reference_sites_name}_minus_with_1_coverage.bedGraph | awk '{print $6}'|paste -s -d+ | bc >> ${_output[1]}
+done
+
+
+
+
+
