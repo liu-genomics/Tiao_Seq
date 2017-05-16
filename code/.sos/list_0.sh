@@ -1,0 +1,5 @@
+ls 160604_sequence_context_dependency.sos bioinformatics_preprocessing.sos bioinformatics_preprocessing_v2.sos reads_distance_to_gold_standard.sos reads_distance_to_gold_standard_test.sos sequence_context_dependency.sos > 'temp2.txt'
+
+
+
+
