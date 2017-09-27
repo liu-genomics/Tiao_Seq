@@ -1,0 +1,88 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# This script will do some bioinformatics preprocessing for single cell Seal data (170620)
+# It needs to handle the following situations:
+# 1. For each sample, there might be /or not be a few pairs of sequencing data.
+# 2. M barcode added by transposase and N barcode added by ligation could be different in molecules in a same library, as a result of the experimental design (Thus needs to be better specified as parameters).
+# 3. Need to count the number of reads that have Jump barcode, and among those how many contain cell-specific barcode.
+
+# The library molecule configuration is stored in as ../unified_data_repo_temp/20170620/Single_cell_hmc_seal_module
+# Before use need to double check the sequences of the common adaptors in case the the adaptor sequence in the current code is not updated.
+# The strategy is to first extract sequences with a certain N barcode (There are 10 different types of barcodes), then use flexbar to do demultiplexing based on the configuration of M barcodes. 
+# To best accomadate `170623_bioinformatics_preprocessing_using_UMI_paired_end_demultiplexing.sos` to the application of analyzing single cell Seal data, I will switch Read1 and Read2 of single cell Seal data.
+# If run on cluster need to modify the path of MarkDuplicates.jar in the step [Mapping_deduplicating]
+
+
+
+parameter: data_folder = '../data/Data/' # where the raw .gz files are in the system
+parameter: file_names1 = [] # a list of files that need to be processed (Read2), files must end with fasta.gz
+parameter: file_names2 = [] # a list of files that need to be processed (Read1), the order of files in file_names1 and file_names2 should be consistent
+parameter: N_barcode = str # The barcode of Jump-Seq, should add the overhand uniform adaptor after the barcode and before the genomic insert AGATGTGTATAAGAGACAG
+parameter: N_barcode_RC = str # The reverse complement of Jump-Seq barcode
+parameter: mapping_reference = '../other_annotations/' # choose a bowtie pre-build index basename e.g., 160811_5mc_spikein
+parameter: reference_base_name = str # a string that will append to the output files to indicate what spike-in references are used. 
+parameter: M_barcode = '170620_single_seal_barcode_96_format.fasta' # 96 format needs to be used because some parameters in [demultiplexing] are fixed.
+
+[gunzip]
+## gunzip the raw sequencing files in file_names1 (Read1)
+raw_files1 =[data_folder + x for x in file_names1]
+
+raw_files2 =[data_folder + x for x in file_names2]
+
+input: raw_files1, paired_with='raw_files2', group_by='single', pattern = "{name}.fastq.gz"
+output: ["${_name}_Read1.fastq","${_name}_Read2.fastq"]
+task: concurrent = True
+run:
+gunzip -c ${_input} > ${_output[0]}
+gunzip -c ${_raw_files2} > ${_output[1]}
+
+
+[Processing]
+# remove adaptors 
+input: group_by=2, pattern = "{name}.{ext}"
+output: ["${_name[0]}_Nbarcode_${N_barcode}.adaptor_removed_empty_removed.fastq", "${_name[1]}_Nbarcode_${N_barcode}.adaptor_removed_empty_removed.fastq"]
+run:
+## discard reads without N_barcode adaptors 
+cutadapt --discard-untrimmed -g ^${N_barcode} -o ${_name[0]}_Nbarcode_${N_barcode}.fastq.temp.fastq -p ${_name[1]}_Nbarcode_${N_barcode}.fastq.temp.fastq ${_input[0]} ${_input[1]}
+
+## get the lines/reads number of Read1 that have a N_barcode Barcode
+wc -l ${_name[0]}_Nbarcode_${N_barcode}.fastq.temp.fastq > ${_name[0]}_Nbarcode_${N_barcode}.fastq.temp.fastq.linenum
+
+
+## trim reads at the 3'ends to remove sequences from universal adaptors, also remove empty reads
+# -a is the plus strand downstream of the genomic DNA insert (From Read1)
+# -A is the reverse compelmentary strand of the genomic DNA insert (From Read2)
+cutadapt --minimum-length 1 --pair-filter=any -a CTGTCTCTTATACACATCTNNNNNNNNAGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -A ${N_barcode_RC}AGATCGGAAGAGCACACGTCTGAACTCCAGTC \
+-o ${_output[0]} -p ${_output[1]} ${_name[0]}_Nbarcode_${N_barcode}.fastq.temp.fastq ${_name[1]}_Nbarcode_${N_barcode}.fastq.temp.fastq
+
+rm ${_name[0]}_Nbarcode_${N_barcode}.fastq.temp.fastq
+rm ${_name[1]}_Nbarcode_${N_barcode}.fastq.temp.fastq
+
+wc -l ${_output[0]} > ${_output[0]}.linenum
+
+[demultiplex]
+# use cell-specific indexes (M barcode) to demultiplex
+input: group_by=2, pattern = "{name}_Read{read_number}_Nbarcode_${N_barcode}.adaptor_removed_empty_removed.fastq"
+output:  ["${_name[0]}_Nbarcode_${N_barcode}.adaptor_removed_barcode_%s%02d_%s.fastq" % (chr(x), y, z) for x in range(65, 69) for y in range(1,25) for z in range(1,3)]
+run:
+/media/yuwen/F/tools/flexbar-2.7.0/flexbar -r ${_input[1]} \
+-p ${_input[0]} -b ${M_barcode} \
+--barcode-trim-end LEFT_TAIL --max-uncalled 2 -t ${_name[0]}_Nbarcode_${N_barcode}.adaptor_removed -n 5
+
+[Mapping_deduplicating]
+#map to {mapping_reference}, don't allow for running multiple pairs of samples at one time, but will use 6 CPUs for one pair at one time. 
+input: group_by =2, pattern = "{prefix}.adaptor_removed_barcode_{barcode}_{read_number}.fastq"
+output: ["${_prefix[0]}.adaptor_removed_no_mismatch_sorted_dedup_${_barcode[0]}.bam.flagstat"]
+task: concurrent = True
+run:
+bowtie -p 1 -S -m 1 -n 0 -l 35 -5 1 ../other_annotations/bowtie1_indexed_genome/mm9 -1 ${_input[1]} -2 ${_input[0]} ${_prefix[0]}.adaptor_removed_no_mismatch_${_barcode[0]}.sam
+samtools view -bS ${_prefix[0]}.adaptor_removed_no_mismatch_${_barcode[0]}.sam -o ${_prefix[0]}.adaptor_removed_no_mismatch_${_barcode[0]}.bam
+rm ${_prefix[0]}.adaptor_removed_no_mismatch_${_barcode[0]}.sam
+samtools sort ${_prefix[0]}.adaptor_removed_no_mismatch_${_barcode[0]}.bam ${_prefix[0]}.adaptor_removed_no_mismatch_sorted_${_barcode[0]}
+rm ${_prefix[0]}.adaptor_removed_no_mismatch_${_barcode[0]}.bam
+
+# use picard to remove PCR duplicates. Works when there is no UMI info available.
+java -jar /media/yuwen/F/tools/picard-tools-1.119/MarkDuplicates.jar INPUT=${_prefix[0]}.adaptor_removed_no_mismatch_sorted_${_barcode[0]}.bam OUTPUT=${_prefix[0]}.adaptor_removed_no_mismatch_sorted_dedup_${_barcode[0]}.bam METRICS_FILE=${_prefix[0]}.adaptor_removed_no_mismatch_sorted_dedup_${_barcode[0]}.dupInfo REMOVE_DUPLICATES=true ASSUME_SORTED=true
+
+samtools flagstat ${_prefix[0]}.adaptor_removed_no_mismatch_sorted_dedup_${_barcode[0]}.bam > ${_output}

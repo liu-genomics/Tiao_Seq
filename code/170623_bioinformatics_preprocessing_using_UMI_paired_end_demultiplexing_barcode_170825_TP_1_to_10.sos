@@ -1,0 +1,112 @@
+#!/usr/bin/env sos-runner
+#fileformat=SOS1.0
+
+# This script will do some bioinformatics preprocessing for Jump-Seq data
+# It needs to handel the following situations:
+# 1. For each sample, there are a few pairs of sequencing data.
+# 2. Jump barcode and cell-specific barcode could be different among studies (Thus needs to be better specified as parameters).
+# 3. Need to count the number of reads that have Jump barcode, and among those how many contain cell-specific barcode.
+
+# The library molecule configuration is stored in Sample\ Note.docx file in ../unified_data_repo/20170331/
+# Before use need to double check the sequences of the common adaptors
+# [demultiplex] step is different from the one in `161213_bioinformatics_preprocessing_using_UMI_paired_end_demultiplexing.sos` in that only 96 cell barcodes were used
+# The later one deals with 384 single-cell barcode, which is used in the earlier version
+# need to put Jump_barcode into the output file name, because now a library is a mixture of libraries from different jump-barcode
+# In the step of [demultiplex], only has transposase barcodes from TP1 to TP15, so change the code accordingly. The sequence names in [single_cell_barcode] need to start with "TP".
+# In general this type of code, compared to `170401_bioinformatics_preprocessing_using_UMI_paired_end_demultiplexing.sos`, works better in the situation where multiple sub-libraries with different transposase barcodes but a same Jump barcode are sequenced together in a same library. 
+
+
+
+parameter: data_folder = '../data/Data/' # where the raw .gz files are in the system
+parameter: file_names1 = [] # a list of files that need to be processed (Read1), files must end with fasta.gz
+parameter: file_names2 = [] # a list of files that need to be processed (Read2), the order of files in file_names1 and file_names2 should be consistent
+parameter: Jump_barcode = str # The barcode of Jump-Seq
+parameter: Jump_barcode_RC = str # The reverse complement of Jump-Seq barcode
+parameter: mapping_reference = '../other_annotations/' # choose a bowtie pre-build index basename e.g., 160811_5mc_spikein
+parameter: reference_base_name = str # a string that will append to the output files to indicate what spike-in references are used. 
+parameter: single_cell_barcode = '../other_annotations/161207_single_cell_index_raw_96_cell_format.fasta' # 96 format needs to be used because some parameters in [demultiplexing] are fixed.
+
+[gunzip]
+## gunzip the raw sequencing files in file_names1 (Read1)
+raw_files1 =[data_folder + x for x in file_names1]
+
+raw_files2 =[data_folder + x for x in file_names2]
+
+input: raw_files1, paired_with='raw_files2', group_by='single', pattern = "{name}.fastq.gz"
+output: ["${_name}_Read1.fastq","${_name}_Read2.fastq"]
+task: concurrent = True
+run:
+gunzip -c ${_input} > ${_output[0]}
+gunzip -c ${_raw_files2} > ${_output[1]}
+
+
+[list_files]
+
+input: group_by=2, pattern = "{name}.fastq"
+output: ["${_name[0]}.listfiles", "${_name[1]}.listfiles"]
+task: concurrent = True
+run:
+ls ${_input[0]} > ${_output[0]}
+ls ${_input[1]} > ${_output[1]}
+
+
+[UMI_encoding]
+#encode UMI information to the name of each read by umi_tools, and remove reads without Jump-Seq barcode
+input: group_by=2, pattern = "{name}.{ext}"
+output: ["${_name[0]}.umi_encoded.fastq","${_name[1]}.umi_encoded.fastq"]
+task: concurrent = True
+run:
+/media/yuwen/F/tools/miniconda3/bin/umi_tools extract -p NNNNNNNN --quality-filter-threshold 20 --quality-encoding phred33 \
+-I ${_input[0]} -L ${_name}.UMI_extract.log -S ${_output[0]} --read2-in ${_input[1]} --read2-out ${_output[1]}
+
+
+[Post_UMI_processing]
+# remove adaptors 
+input: group_by=2, pattern = "{name}.umi_encoded.fastq"
+output: ["${_name[0]}_jump_${Jump_barcode}.umi_encoded_adaptor_removed_empty_removed.fastq", "${_name[1]}_jump_${Jump_barcode}.umi_encoded_adaptor_removed_empty_removed.fastq"]
+run:
+## discard reads without Jump-seq adaptors 
+cutadapt --discard-untrimmed -g ^${Jump_barcode} -o ${_name[0]}_jump_${Jump_barcode}.umi_encoded.fastq.temp.fastq -p ${_name[1]}_jump_${Jump_barcode}.umi_encoded.fastq.temp.fastq ${_input[0]} ${_input[1]}
+
+## get the lines/reads number of Read1 that have a Jump Barcode
+wc -l ${_name[0]}_jump_${Jump_barcode}.umi_encoded.fastq.temp.fastq > ${_name[0]}_jump_${Jump_barcode}.umi_encoded.fastq.temp.fastq.linenum
+
+
+## trim reads at the 3'ends to remove sequences from universal adaptors, also remove empty reads
+# -a is the plus strand downstream of the genomic DNA insert (From Read1)
+# -A is the reverse compelmentary strand of the genomic DNA insert (From Read2)
+cutadapt --minimum-length 1 --pair-filter=any -a CTGTCTCTTATACACATCTNNNNNNNNAGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ${Jump_barcode_RC}NNNNNNNNAGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT \
+-o ${_output[0]} -p ${_output[1]} ${_name[0]}_jump_${Jump_barcode}.umi_encoded.fastq.temp.fastq ${_name[1]}_jump_${Jump_barcode}.umi_encoded.fastq.temp.fastq
+
+rm ${_name[0]}_jump_${Jump_barcode}.umi_encoded.fastq.temp.fastq
+rm ${_name[1]}_jump_${Jump_barcode}.umi_encoded.fastq.temp.fastq
+
+wc -l ${_output[0]} > ${_output[0]}.linenum
+
+[demultiplex]
+# use cell-specific indexes to demultiplex
+input: group_by=2, pattern = "{name}_Read{read_number}_jump_${Jump_barcode}.umi_encoded_adaptor_removed_empty_removed.fastq"
+output:  ["${_name[0]}_jump_${Jump_barcode}.umi_encoded_adaptor_removed_barcode_TP%02d_%s.fastq" % (y, z) for y in range(1,11) for z in range(1,3)]
+run:
+/media/yuwen/F/tools/flexbar-2.7.0/flexbar -r ${_input[1]} \
+-p ${_input[0]} -b ${single_cell_barcode} \
+--barcode-trim-end LEFT_TAIL --max-uncalled 2 -t ${_name[0]}_jump_${Jump_barcode}.umi_encoded_adaptor_removed -n 5
+
+
+
+[UMI_mapping]
+#map to {mapping_reference}, don't allow for running multiple pairs of samples at one time, but will use 6 CPUs for one pair at one time. 
+input: group_by =2, pattern = "{prefix}.umi_encoded_adaptor_removed_barcode_{barcode}_{read_number}.fastq"
+output: ["${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup_${_barcode[0]}.bam.flagstat"]
+task: concurrent = True
+run:
+bowtie -p 1 -S -m 1 -n 0 -l 35 -5 1 ../other_annotations/bowtie1_indexed_genome/mm9 -1 ${_input[1]} -2 ${_input[0]} ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_${_barcode[0]}.sam
+samtools view -bS ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_${_barcode[0]}.sam -o ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_${_barcode[0]}.bam
+rm ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_${_barcode[0]}.sam
+samtools sort ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_${_barcode[0]}.bam ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_sorted_${_barcode[0]}
+rm ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_${_barcode[0]}.bam
+samtools index ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_sorted_${_barcode[0]}.bam
+/media/yuwen/F/tools/miniconda3/bin/umi_tools dedup -I ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_sorted_${_barcode[0]}.bam \
+-S ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup_${_barcode[0]}.bam -L ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup_${_barcode[0]}.log
+samtools flagstat ${_prefix[0]}.umi_encoded_adaptor_removed_no_mismatch_sorted_dedup_${_barcode[0]}.bam > ${_output}
+

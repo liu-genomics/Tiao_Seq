@@ -8,6 +8,7 @@
 # 3. Need to count the number of reads that have Jump barcode, and among those how many contain cell-specific barcode.
 
 # The library molecule configuration is stored in Sample\ Note.docx file in ../unified_data_repo/20170331/
+# Before use need to double check the sequences of the common adaptors
 
 
 parameter: data_folder = '../data/Data/' # where the raw .gz files are in the system
