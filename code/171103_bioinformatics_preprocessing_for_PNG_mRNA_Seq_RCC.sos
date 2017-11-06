@@ -1,0 +1,69 @@
+#!/usr/bin/env sos-runner
+#fileformat=sos 0.8.4.1
+
+# this script is used to process the PNG mRNA-Seq data. 
+# The input is a pair of fastq files from paired-end sequencing data
+
+
+from glob import glob
+from subprocess import check_output
+
+parameter: data_folder = '../data/' # where the raw .gz files are in the system
+parameter: file_names1 = [] # a list of files that need to be processed (Read1), files must end with fasta.gz
+parameter: file_names2 = [] # a list of files that need to be processed (Read2), the order of files in file_names1 and file_names2 should be consistent
+parameter: output_folder = str # The name of output folder
+parameter: gtf_file = '../other_annotations/genecode_gtf_annotation/gencode.vM1.annotation.gtf'
+parameter: gtf_index_folder = '../other_annotations/genecode_gtf_annotation/' # choose a gtf index folder
+parameter: bowtie_index = '../other_annotations/bowtie2_indexed_genome/mm9' # a string that will append to the output files to indicate what genomic references are used.
+parameter: cpu_number = 4 # a number indicates how many cpus will be used for tophat mapping.
+parameter: max_multihits = 1 # the maximal multihits number allowed for a read
+
+
+
+[gunzip]
+## gunzip the raw sequencing files in file_names1 (Read1)
+raw_files1 =[data_folder + x for x in file_names1]
+
+raw_files2 =[data_folder + x for x in file_names2]
+
+input: raw_files1, paired_with='raw_files2', group_by='single', pattern = "{name}.fq.gz"
+output: ["${_name}_Read1.fastq","${_name}_Read2.fastq"]
+task: concurrent = True
+run:
+gunzip -c ${_input} > ${_output[0]}
+gunzip -c ${_raw_files2} > ${_output[1]}
+
+
+[mapping]
+## map to known transcripts from genecode gtf based on mm9
+## mapping is only on known junctions, on transcriptome only, 
+output_folder_path = data_folder + output_folder
+input:  group_by=2, pattern = "{name}.fastq"
+output: ["${output_folder_path}/accepted_hits.bam"]
+run:
+module unload python
+module load python/2.7.12
+module load bowtie2
+tophat -o ${output_folder_path} -p ${cpu_number} -G ${gtf_file} --transcriptome-index=${gtf_index_folder} --no-novel-juncs --transcriptome-only --max-multihits ${max_multihits} ${bowtie_index} ${_input[0]} ${_input[1]}
+samtools flagstat ${_output} > ${_output}.flagstat
+
+[htseq_count]
+# use htseq-count to count the number of reads in each gene
+output_folder_path = data_folder + output_folder
+input: pattern = "{name}/accepted_hits.bam"
+output: ["${_name}/htseq.count"]
+run:
+samtools view -o ${output_folder_path}/accepted_hits.sam ${_input}
+htseq-count -m union -s reverse -a 10 -t exon -i gene_name \
+${output_folder_path}/accepted_hits.sam ../other_annotations/genecode_gtf_annotation/gencode.vM1.annotation.gff > ${_output}
+
+
+[htseq_count_protein_coding]
+# use htseq-count to count the number of reads in each gene, only use protein coding genes. 
+output_folder_path = data_folder + output_folder
+input: pattern = "{name}/accepted_hits.bam"
+output: ["${_name}/htseq_protein_coding.count"]
+run:
+samtools view -o ${output_folder_path}/accepted_hits.sam ${_input}
+htseq-count -m union -s reverse -a 10 -t exon -i gene_name \
+${output_folder_path}/accepted_hits.sam ../other_annotations/genecode_gtf_annotation/gencode.vM1.annotation.protein_coding.gff > ${_output}
