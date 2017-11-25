@@ -64,6 +64,11 @@ output_folder_path = data_folder + output_folder
 input: pattern = "{name}/accepted_hits.bam"
 output: ["${_name}/htseq_protein_coding.count"]
 run:
+module unload python
+module unload tophat
+module unload smatools
+module load Anaconda2/4.3.0
+module load samtools
 samtools view -o ${output_folder_path}/accepted_hits.sam ${_input}
 htseq-count -m union -s reverse -a 10 -t exon -i gene_name \
 ${output_folder_path}/accepted_hits.sam ../other_annotations/genecode_gtf_annotation/gencode.vM1.annotation.protein_coding.gff > ${_output}
