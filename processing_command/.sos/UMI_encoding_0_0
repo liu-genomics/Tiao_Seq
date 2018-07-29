@@ -1,4 +1,0 @@
-/media/yuwen/F/tools/miniconda3/bin/umi_tools extract -p NNNNNNNN --quality-filter-threshold 20 --quality-encoding phred33 -I ../data/Data/20170120_second/323T_hmC_jump_cfDNA.fastq -L ../data/Data/20170120_second/323T_hmC_jump_cfDNA.UMI_extract.log -S ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded.fastq
-## discard reads without adaptors
-cutadapt --discard-untrimmed -g ^TGACTCG -o ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded_adaptor_removed.fastq ../data/Data/20170120_second/323T_hmC_jump_cfDNA.umi_encoded.fastq
-

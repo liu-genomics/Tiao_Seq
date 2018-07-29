@@ -1,7 +1,0 @@
-# gunzip -c ../unified_data_repo/20170120_second/test.fastq.gz > ../unified_data_repo/20170120_second/test.fastq
-# 
-# 
-# step_sig: 7ecc959c7a3bd23ba2fc7a379195644e
-#started at Wednesday, 01. March 2017 12:31AM
-#
-#time	proc_cpu	proc_mem	children	children_cpu	children_mem

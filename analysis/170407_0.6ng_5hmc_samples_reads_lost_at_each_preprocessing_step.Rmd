@@ -53,7 +53,7 @@ total reads from raw data: 16 million
 ### 20170331 CHe-Lu-8s-Lu-4_S4_L002
 
 ```
-no mismatch, mapped distinct reads :  million
+no mismatch, mapped distinct reads :  0.0021 million
 no mismatch, mapped total reads: 0.99 million
 with Jump-barcode and cell barcode:4.9 million
 with Jump-barcode: 8.8 million

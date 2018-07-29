@@ -1,6 +1,0 @@
-samtools view -bS -F 4 ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.sam -o ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.bam
-samtools sort ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.bam ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.sorted
-samtools index ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.sorted.bam
-/media/yuwen/F/tools/miniconda3/bin/umi_tools dedup -I ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.sorted.bam -S ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam -L ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.UMI_dedup_no_mismatch.log
-samtools flagstat ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam > ../data/Data/20170120_second/323T_hmC_jump_cfDNA.hg19.umi_encoded_adaptor_removed_no_mismatch.sorted.dedup.bam.flagstat
-
